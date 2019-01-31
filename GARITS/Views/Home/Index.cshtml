@@ -2,13 +2,19 @@
     ViewData["Title"] = "Home Page";
 }
 
+@using GARITS.Models
+
+@{
+    var user = (User)ViewData["User"];
+}
+
 <div class="row">
 
     <div class="col-md-6">
 
         <div class="jumbotron jumbotron-fluid">
             <div class="container">
-                <h1 class="display-4">Welcome back Callum.</h1>
+                <h1 class="display-4">Welcome back @user.firstname.</h1>
                 <p class="lead">What would you like to do today?</p>
                 <div style="display: inline-block">
                     <a class="btn btn-primary" href="#" role="button">Add New Job</a>
@@ -36,8 +42,17 @@
             </div>
         </div>
     </div>
-   
+
     <div class="col-md-3">
+
+        <div class="card">
+            <div class="card-header">User</div>
+            <div class="card-body">
+                <p class="card-text">@user.firstname @user.lastname</p>
+                <p class="card-text">@user.role</p>
+            </div>
+        </div>
+        <br>
         <div class="card">
             <div class="card-header">Updates</div>
             <ul class="list-group">

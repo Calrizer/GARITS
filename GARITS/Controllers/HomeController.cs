@@ -7,6 +7,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using GARITS.Models;
 using GARITS.Controllers;
+using GARITS.Providers;
+
+
 namespace GARITS.Controllers
 {
     public class HomeController : Controller
@@ -20,6 +23,8 @@ namespace GARITS.Controllers
                 return RedirectToAction("Login", "Auth");
 
             }
+
+            ViewData["User"] = getAuthenticatedUser();
 
             return View();
 
@@ -55,6 +60,13 @@ namespace GARITS.Controllers
             }
 
             return false;
+
+        }
+
+        private User getAuthenticatedUser()
+        {
+
+            return UserProvider.getUserFromUsername(HttpContext.Session.GetString("user"));
 
         }
 
