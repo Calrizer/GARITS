@@ -9,6 +9,7 @@
     <PackageReference Include="MySql.Data" Version="8.0.14" />
     <PackageReference Include="popper.js" Version="1.14.3" />
     <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.2.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,5 +20,9 @@
     <Folder Include="Providers\" />
     <Folder Include="Views\Auth\" />
     <Folder Include="Views\Admin\" />
+    <Folder Include="Views\Job\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="Views\Home\Car.cshtml" />
   </ItemGroup>
 </Project>

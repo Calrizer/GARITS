@@ -1,0 +1,175 @@
+﻿@using GARITS.Models
+
+@{
+
+    var notes = (List<JobNote>)ViewData["Notes"];
+    var car = (Vehicle)ViewData["Vehicle"];
+    var customer = (Customer)ViewData["Customer"];
+    var parts = (Dictionary<Part, int>)ViewData["Parts"];
+    var labour = (Dictionary<string, float>)ViewData["Labour"];
+    var mechanic = (User)ViewData["Mechanic"];
+    var partsTotal = 0.0;
+
+}
+
+<div class="row">
+
+    <div class="col-md-12">
+
+        <div class="card">
+
+            <h5 class="card-header">Job View</h5>
+
+        </div>
+
+    </div>
+
+</div>
+
+<br>
+
+<div class="row">
+
+    <div class="col-md-3">
+        <div class="card">
+            <h5 class="card-header">Details</h5>
+            <div class="card-body">
+                <p class="card-text">Job ID: J2092361</p>
+                <p class="card-text">Status: Complete - Paid</p>
+                <p class="card-text">Updated: 24/02/2019</p>
+            </div>
+        </div>
+        <br>
+        <div class="card">
+            <h5 class="card-header">Customer</h5>
+            <div class="card-body">
+                <p class="card-text">@customer.firstname @customer.lastname</p>
+                <p class="card-text">@customer.phone</p>
+                <p class="card-text">@customer.email</p>
+            </div>
+        </div>
+        <br>
+        <div class="card">
+            <h5 class="card-header">Vehicle</h5>
+            <div class="card-body">
+                <p><span class="registration-ui">@car.vrm</span></p>
+                <p class="card-text">Details: @car.make @car.model</p>
+                <p class="card-text">Year: @car.year</p>
+                <p class="card-text">Colour: @car.colour</p>
+            </div>
+        </div>
+        <br>
+        <div class="card">
+            <h5 class="card-header">Previous Jobs</h5>
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    J3267311
+                    21/01/2019
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    J2853109
+                    21/01/2019
+                </li>
+            </ul>
+        </div>
+
+    </div>
+
+    <div class="col-md-5">
+        <div class="card">
+            <h5 class="card-header">Job Notes</h5>
+            <div class="card-body">
+
+                @foreach (JobNote note in notes)
+                {
+
+                    <div class="card">
+                        <div class="card-header">
+                            @note.type
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">@note.body</p>
+                            <p class="card-text text-muted">@note.user.firstname @note.user.lastname - @note.time</p>
+                        </div>
+                    </div>
+                    <br>
+
+                }
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="col-md-4">
+
+        <div class="card">
+
+            <h5 class="card-header">Parts and Labour <i class="fas fa-plus"></i></h5>
+            <div class="card-body">
+
+                @foreach (KeyValuePair<Part, int> part in parts){
+
+                <div class="card">
+
+                    <div class="card-body">
+
+                        <p class="card-text">@part.Key.manufacturer: @part.Key.name</p>
+                        <p class="card-text">@part.Key.partID</p>
+                        <p class="card-text">£@part.Key.price</p>
+                        <p class="card-text">Quantity: @part.Value</p>
+
+                        @{
+                            partsTotal = partsTotal + (part.Key.price * part.Value);
+                        }
+
+                    </div>
+
+                </div>
+                <br>
+
+                }
+
+            </div>
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Parts Total: £@partsTotal
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    VAT: £@((partsTotal / 100) * 20)
+                </li>
+            </ul>
+            <div class="card-footer">
+                <h6>Total Inc VAT: £@(((partsTotal / 100) * 20) + partsTotal)</h6>
+            </div>
+
+        </div>
+
+       <br>
+
+        <div class="card">
+
+            <h5 class="card-header">Labour</h5>
+            <div class="card-body">
+                <p class="card-text">Estimated Labour: @labour["Labour Estimate"] hours.</p>
+                <p class="card-text">Actual Labour: @labour["Labour Actual"] hours.</p>
+                <p class="card-text">Rate: £@mechanic.rate / hour.</p>
+            </div>
+            <div class="card-footer">
+                Labour Total: £@(labour["Labour Actual"] * @mechanic.rate)
+            </div>
+
+        </div>
+        <br>
+        <div class="card">
+
+            <h6 class="card-header">
+                Total: £@(partsTotal + (labour["Labour Actual"] * @mechanic.rate))
+            </h6>
+
+        </div>
+        
+    </div>
+
+</div>
