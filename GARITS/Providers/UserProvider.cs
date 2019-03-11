@@ -27,7 +27,7 @@ namespace GARITS.Providers
 
             using (MySqlConnection con = new MySqlConnection(connection))
             {
-                string query = "SELECT username, firstname, lastname, role FROM Users";
+                string query = "SELECT username, firstname, lastname, role, rate FROM Users";
                 using (MySqlCommand cmd = new MySqlCommand(query))
                 {
                     cmd.Connection = con;
@@ -43,7 +43,8 @@ namespace GARITS.Providers
                                 username = (sdr["username"]).ToString(),
                                 firstname = sdr["firstname"].ToString(),
                                 lastname = sdr["lastname"].ToString(),
-                                role = sdr["role"].ToString()
+                                role = sdr["role"].ToString(),
+                                rate = float.Parse(sdr["rate"].ToString())
 
 
                             });
@@ -71,7 +72,7 @@ namespace GARITS.Providers
 
             using (MySqlConnection con = new MySqlConnection(connection))
             {
-                string query = "SELECT username, firstname, lastname, role FROM Users WHERE username = @username";
+                string query = "SELECT username, firstname, lastname, role, rate FROM Users WHERE username = @username";
                 using (MySqlCommand cmd = new MySqlCommand(query))
                 {
                     cmd.Parameters.AddWithValue("@username", username);
@@ -88,7 +89,8 @@ namespace GARITS.Providers
                                 username = (sdr["username"]).ToString(),
                                 firstname = sdr["firstname"].ToString(),
                                 lastname = sdr["lastname"].ToString(),
-                                role = sdr["role"].ToString()
+                                role = sdr["role"].ToString(),
+                                rate = float.Parse(sdr["rate"].ToString())
 
 
                             });
@@ -179,7 +181,7 @@ namespace GARITS.Providers
 
             using (MySqlConnection con = new MySqlConnection(connection))
             {
-                string query = "INSERT INTO users VALUES (@username, @password, @firstname, @lastname, @role)";
+                string query = "INSERT INTO users VALUES (@username, @password, @firstname, @lastname, @role, @rate)";
                 using (MySqlCommand cmd = new MySqlCommand(query))
                 {
                     cmd.Parameters.AddWithValue("@username", newUser.username);
@@ -187,6 +189,7 @@ namespace GARITS.Providers
                     cmd.Parameters.AddWithValue("@firstname", newUser.firstname);
                     cmd.Parameters.AddWithValue("@lastname", newUser.lastname);
                     cmd.Parameters.AddWithValue("@role", newUser.role);
+                    cmd.Parameters.AddWithValue("@rate", newUser.rate);
 
                     cmd.Connection = con;
                     con.Open();

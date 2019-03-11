@@ -2,7 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net;
+using System.IO;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using GARITS.Models;
@@ -77,7 +81,57 @@ namespace GARITS.Controllers
         {
             ViewData["Message"] = "Your application description page.";
 
+
+            if (!isAuthenticated())
+            {
+                return RedirectToAction("Login", "Auth");
+            }
+
+            if (getAuthenticatedUser().role != "admin")
+            {
+
+                TempData["Page"] = "Admin Dashboard";
+
+                return RedirectToAction("PermissionsError", "Auth");
+
+            }
+
             return View();
+
+        }
+
+        public IActionResult Users()
+        {
+
+            ViewData["Users"] = UserProvider.getUsers();
+
+            return View();
+
+        }
+
+        [HttpPost]
+        public IActionResult Car(string vrm)
+        {
+
+            ViewData["Car"] = VehicleProvider.getVehicleFromVRM(vrm);
+            ViewData["DVLACar"] = VehicleProvider.getDVLADetails(vrm);
+
+            return View();
+
+        }
+
+        private bool isAuthenticated()
+        {
+
+            if (HttpContext.Session.GetString("user") != null)
+            {
+
+                return true;
+
+            }
+
+            return false;
+
         }
 
         public IActionResult Contact()

@@ -4,10 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using GARITS.Providers;
 using Microsoft.AspNetCore.Mvc;
+using GARITS.Models;
 
 using Microsoft.AspNetCore.Http;
-
-// For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace GARITS.Controllers
 {
@@ -45,8 +44,6 @@ namespace GARITS.Controllers
         public IActionResult PostLogin(string username, string password)
         {
 
-            Console.Out.WriteLine(username + " - " + password);
-
             if (UserProvider.checkCredentials(username, password))
             {
                 Console.Out.WriteLine("======Login Success======");
@@ -67,5 +64,52 @@ namespace GARITS.Controllers
 
         }
 
+
+        [HttpGet]
+        public IActionResult PermissionsError()
+        {
+
+            if (!isAuthenticated())
+            {
+
+                return RedirectToAction("Login", "Auth");
+
+            }
+
+            if (TempData["Page"] == null)
+            {
+
+                return RedirectToAction("index", "home");
+
+            }
+
+            ViewData["Page"] = TempData["Page"];
+
+            return View();
+
+        }
+
+        public bool isAuthenticated()
+        {
+
+            if (HttpContext.Session.GetString("user") != null)
+            {
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+        public User getAuthenticatedUser()
+        {
+
+            return UserProvider.getUserFromUsername(HttpContext.Session.GetString("user"));
+
+        }
+
     }
+
 }
