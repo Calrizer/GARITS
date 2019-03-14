@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Collections;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
@@ -108,6 +109,33 @@ namespace GARITS.Providers
 
         }
 
+        public static List<string> getPasswords()
+        {
+            List<string> passwords = new List<string>();
+
+            using (MySqlConnection con = new MySqlConnection(connection))
+            {
+                string query = "SELECT password FROM Users ORDER BY username";
+
+                using (MySqlCommand cmd = new MySqlCommand(query))
+                {
+                    cmd.Connection = con;
+                    con.Open();
+                    using (MySqlDataReader sdr = cmd.ExecuteReader())
+                    {
+                        while (sdr.Read()) {
+                            passwords.Add(sdr["password"].ToString());
+                            break;
+                        }
+                    }
+                    con.Close();
+                }
+            }
+
+            return passwords;
+
+    }
+
 
         public static bool checkCredentials(string username, string password)
         {
@@ -174,6 +202,28 @@ namespace GARITS.Providers
             }
 
         }
+
+
+        /*public static void changeName(string newName, string username)
+        {
+            using (MySqlConnection con = new MySqlConnection(connection))
+            {
+                string query = "UPDATE users SET firstname = @newName WHERE username = @username";
+                using (MySqlCommand cmd = new MySqlCommand(query))
+                {
+                    cmd.Parameters.AddWithValue("@newName", newName);
+                    cmd.Parameters.AddWithValue("@username", username);
+
+                    cmd.Connection = con;
+                    con.Open();
+
+                    cmd.ExecuteNonQuery();
+
+                    con.Close();
+                }
+            }
+            
+        }*/
 
     }
 

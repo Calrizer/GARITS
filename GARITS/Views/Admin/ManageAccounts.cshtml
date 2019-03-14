@@ -1,0 +1,134 @@
+﻿
+@{
+    ViewData["Title"] = "ManageAccounts";
+}
+@using GARITS.Models
+@using GARITS.Providers
+@using System.Collections
+
+@model User
+
+@{
+    List<User> users = UserProvider.getUsers();
+    List<string> passwords = UserProvider.getPasswords();
+    int passIndex = 0;
+
+    User currentUser = new User("", "", "", "");
+
+
+}
+
+<head>
+    <style>
+        tbody tr{
+            background-color:white;
+        }
+        tbody tr:hover{
+            background-color:dodgerblue;
+        }
+    </style>
+</head>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-10">
+                    <h3>
+                        Manage Accounts
+                    </h3>
+                    <table class="table" id="userTable">
+
+                        <thead>
+                            <tr>
+                                <th>Username</th><th>Password</th><th>Name</th><th>Role</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (User user in users)
+                            {
+                                <tr onclick="@{currentUser.username="clicked";} ">
+
+                                    <td id="username">
+                                        @user.username
+                                    </td>
+                                    <td id="password">
+                                        @passwords[passIndex]
+                                        @{if (passIndex < (passwords.Count() - 1) )
+                                            {
+                                                passIndex++;
+                                            }
+                                        }
+
+                                    </td>
+                                    <td id="name">
+                                        @user.firstname @user.lastname
+                                    </td>
+                                    <td id="role">
+                                        @user.role
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <form role="form" class="form-inline">
+                        <div class="form-group">
+
+                            <label for="usernameInput">
+                                Username
+                            </label>
+                            <input type="text" class="form-control" id="usernameInput" size="15" value="@currentUser.username"/>
+                        </div>
+                        <div class="form-group">
+
+                            <label for="passwordInput">
+                                Password
+                            </label>
+                            <input type="password" class="form-control" id="passwordInput" size="15"/>
+                        </div>
+                        <div class="form-group">
+
+                            <label for="nameInput">
+                                Name
+                            </label>
+                            <input type="text" class="form-control" id="nameInput" size="15" value="@currentUser.firstname 
+                                   @currentUser.lastname" />
+                        </div>
+                        <div class="form-group">
+
+                            <label for="roleInput">
+                                Role
+                            </label>
+                            <input type="text" class="form-control" id="roleInput" size="15" value="@currentUser.role"/>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">
+                            Save
+                        </button>
+
+                        <button type="submit" class="btn btn-primary">
+                            Delete Account
+                        </button>
+                    </form>
+                </div>
+                <div class="col-md-2">
+                    <form role="form">
+                        <div class="form-group">
+
+                            <label for="searchInput">
+                                Search
+                            </label>
+                            <input type="email" class="form-control" id="searchInput" />
+                        </div>
+                    </form>
+                    <div align="right">
+                        <button type="button" class="btn btn-success">
+                            Back
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

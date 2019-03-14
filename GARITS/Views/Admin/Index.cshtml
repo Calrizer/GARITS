@@ -1,0 +1,76 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+@using GARITS.Models
+
+@model User
+
+@{
+    var user = (User)ViewData["User"];
+}
+
+<div class="row">
+
+    <div class="col-md-6">
+
+        <div class="jumbotron jumbotron-fluid">
+            <div class="container">
+                <h1 class="display-4">Welcome back @user.firstname.</h1>
+                <p class="lead">What would you like to do today?</p>
+                <div style="display: inline-block">
+                    <a class="btn btn-primary" href="#" role="button">Create Account</a>
+                    <a class="btn btn-primary" role="button" asp-action="ManageAccounts">Manage Accounts</a>
+                    <a class="btn btn-primary" href="#" role="button">Retrieve Account</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-header">Registration Plate Search</div>
+            <div class="card-body">
+                <p class="card-text">Enter a registration plate here to get details of the: vehicle, customer, jobs and parts.</p>
+
+                <form action="Search/Reg" method="post">
+                    <div class="form-group">
+                        <input name="reg" tabindex="1" type="text" class="form-control" id="reg" placeholder="Registration Plate">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+
+        <div class="card">
+            <div class="card-header">User</div>
+            <div class="card-body">
+                <p class="card-text">@user.firstname @user.lastname</p>
+                <p class="card-text">@user.role</p>
+            </div>
+        </div>
+        <br>
+        <div class="card">
+            <div class="card-header">Updates</div>
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Current Jobs
+                    <span class="badge badge-primary badge-pill">14</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Overdue Invoices
+                    <span class="badge badge-primary badge-pill">2</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    All Customers
+                    <span class="badge badge-primary badge-pill">143</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

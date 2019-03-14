@@ -49,6 +49,14 @@ namespace GARITS.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
+        
+        /*public IActionResult ChangeName(User user)
+        {
+            string name = user.firstname;
+            UserProvider.changeName(name, getAuthenticatedUser().username);
+            return RedirectToAction("Index");
+        }*/
+
         private bool isAuthenticated()
         {
 
