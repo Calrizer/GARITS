@@ -45,8 +45,6 @@ namespace GARITS.Controllers
         [HttpPost]
         public IActionResult CreateAccount(string username, string firstname, string lastname, string role, string password)
         {
-            /*string[] lines = { "WRITE TO FILE", user.username, user.firstname, user.lastname, user.role, password };
-            System.IO.File.WriteAllLines(@"C:\Users\Amber\Documents\Networks and Operating Systems\writetext.txt", lines);*/
 
             User user = new User
             {
@@ -55,6 +53,8 @@ namespace GARITS.Controllers
                 lastname = lastname,
                 role = role
             };
+            string[] lines = { "WRITE TO FILE", user.username, user.firstname, user.lastname, user.role, password };
+            System.IO.File.WriteAllLines(@"C:\Users\Amber\Documents\Networks and Operating Systems\writetext.txt", lines);
 
 
             UserProvider.addUser(user, password);
