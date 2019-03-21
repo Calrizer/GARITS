@@ -63,8 +63,6 @@ namespace GARITS.Controllers
                 lastname = lastname,
                 role = role
             };
-            string[] lines = { "WRITE TO FILE", user.username, user.firstname, user.lastname, user.role, password };
-            System.IO.File.WriteAllLines(@"C:\Users\Amber\Documents\Networks and Operating Systems\writetext.txt", lines);
 
 
             UserProvider.addUser(user, password);
