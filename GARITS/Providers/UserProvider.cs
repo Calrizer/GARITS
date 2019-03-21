@@ -110,6 +110,49 @@ namespace GARITS.Providers
 
         }
 
+        public static List<User> getMechanics()
+        {
+
+            List<User> users = new List<User>();
+
+            using (MySqlConnection con = new MySqlConnection(connection))
+            {
+                string query = "SELECT username, firstname, lastname, role, rate FROM Users WHERE role = 'foreperson' OR 'mechanic' OR 'admin'";
+                using (MySqlCommand cmd = new MySqlCommand(query))
+                {
+                    cmd.Connection = con;
+                    con.Open();
+                    using (MySqlDataReader sdr = cmd.ExecuteReader())
+                    {
+                        while (sdr.Read())
+                        {
+
+                            users.Add(new User
+                            {
+
+                                username = (sdr["username"]).ToString(),
+                                firstname = sdr["firstname"].ToString(),
+                                lastname = sdr["lastname"].ToString(),
+                                role = sdr["role"].ToString(),
+                                rate = float.Parse(sdr["rate"].ToString())
+
+
+                            });
+
+                        }
+
+                    }
+
+                    con.Close();
+
+                }
+
+            }
+
+            return users;
+
+        }
+
 
         public static bool checkCredentials(string username, string password)
         {

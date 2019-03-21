@@ -113,9 +113,42 @@ namespace GARITS.Providers
 
             }
 
-            Console.Out.WriteLine("Car Data" + car);
-
             return car;
+
+        }
+
+        public static Customer getCustomerFromVehicle(string vrm)
+        {
+
+            Customer customer = new Customer();
+
+            using (MySqlConnection con = new MySqlConnection(connection))
+            {
+                string query = "SELECT customerID FROM CustomersVehicles WHERE vrm = @vrm";
+                using (MySqlCommand cmd = new MySqlCommand(query))
+                {
+                    cmd.Parameters.AddWithValue("@vrm", vrm);
+                    cmd.Connection = con;
+                    con.Open();
+                    using (MySqlDataReader sdr = cmd.ExecuteReader())
+                    {
+                        while (sdr.Read())
+                        {
+
+                            customer = CustomerProvider.getCustomerFromID(sdr["customerID"].ToString());
+                            break;
+
+                        }
+
+                    }
+
+                    con.Close();
+
+                }
+
+            }
+
+            return customer;
 
         }
 

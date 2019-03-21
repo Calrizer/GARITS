@@ -1,0 +1,204 @@
+﻿
+@{
+
+    var notes = (JobNote)ViewData["InvoiceNote"];
+    var job = (Job)ViewData["JobDetails"];
+    var partsTotal = 0.0;
+    var labourTotal = 0.0;
+    var total = 0.0;
+
+}
+
+<div class="invoice-box">
+    <table cellpadding="0" cellspacing="0">
+
+        <tr class="information">
+            <td colspan="2">
+                <table>
+                    <tr>
+                        <td>
+                            @job.customer.firstname @job.customer.lastname<br>
+                            @job.customer.addressline1<br>
+                            @job.customer.addressline2<br>
+                            @job.customer.county<br>
+                            @job.customer.postcode<br>
+                            <br>
+                            Dear @(job.customer.title + ".") @job.customer.lastname,
+                        </td>
+
+                        <td>
+                            Quick Fix Fitters<br>
+                            19 High Street<br>
+                            Ashford<br>
+                            Kent<br>
+                            CT16 8YY<br>
+                            <br>
+                            12th March 2019
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <div class="invoice-number">
+
+        <h5>INVOICE NO: @("J" + job.jobID)</h5>
+
+    </div>
+
+    <br>
+    <br>
+
+    <p>
+        Vehicle Registration No: @job.vehicle.vrm<br>
+        Make: @job.vehicle.make<br>
+        Model: @job.vehicle.model<br>
+    </p>
+
+    <p>Description of work:</p>
+    <p>
+        @notes.body <br>
+    </p>
+
+    <br>
+
+    <table>
+
+        <tr class="heading">
+            <td>
+                Item
+            </td>
+            <td>
+                Part No
+            </td>
+            <td>
+                Unit Cost
+            </td>
+            <td>
+                Quantity
+            </td>
+            <td>
+                Cost
+            </td>
+        </tr>
+
+        @foreach (KeyValuePair<Part, int> part in job.parts)
+    {
+
+        <tr>
+
+            <td>
+                @part.Key.name
+            </td>
+            <td>
+                @part.Key.partID
+            </td>
+            <td>
+                £@part.Key.price
+            </td>
+            <td>
+                @part.Value
+            </td>
+            <td>
+                £@(part.Key.price * part.Value)
+            </td>
+            @{
+            partsTotal = partsTotal + (part.Key.price * part.Value);
+            }
+
+        </tr>
+
+}
+
+        <tr class="labour">
+
+            <td>
+                Labour
+            </td>
+            <td>
+                -
+            </td>
+            <td>
+                £@job.mechanic.rate / hour
+            </td>
+            <td>
+                @job.labour["Labour Actual"] hours
+            </td>
+            <td>
+                £@(job.mechanic.rate * job.labour["Labour Actual"])
+            </td>
+            @{
+            labourTotal = job.mechanic.rate * job.labour["Labour Actual"];
+            }
+
+        </tr>
+
+        @{
+
+        total = partsTotal + labourTotal;
+
+        }
+
+        <tr class="total">
+
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>
+                Total
+            </td>
+            <td>
+                £@total.ToString("#.##")
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>
+                VAT
+            </td>
+            <td>
+                £@(((total / 100) * 20).ToString("#.##"))
+            </td>
+
+        </tr>
+
+        <tr class="grand">
+
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>
+                Grand Total
+            </td>
+            <td>
+                £@((total + (total / 100) * 20).ToString("#.##"))
+            </td>
+
+        </tr>
+
+    </table>
+
+    <br>
+
+    <p>
+        Thank you for your valued custom. We look forward to receiving your payment in due course.
+    </p>
+
+    <br>
+
+    <p>
+        Yours sincerely,
+    </p>
+    <p>
+        G. Lancaster
+    </p>
+
+</div>
+
+

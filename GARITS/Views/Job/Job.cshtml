@@ -2,13 +2,35 @@
 
 @{
 
-    var notes = (List<JobNote>)ViewData["Notes"];
-    var car = (Vehicle)ViewData["Vehicle"];
-    var customer = (Customer)ViewData["Customer"];
-    var parts = (Dictionary<Part, int>)ViewData["Parts"];
-    var labour = (Dictionary<string, float>)ViewData["Labour"];
-    var mechanic = (User)ViewData["Mechanic"];
+    var job = (Job)ViewData["JobDetails"];
     var partsTotal = 0.0;
+    var labourTotal = 0.0;
+    var total = 0.0;
+    var labourAdded = false;
+    var invoiceNoteAdded = false;
+    var isFinished = false;
+
+    if (job.labour.ContainsKey("Labour Actual"))
+    {
+        labourAdded = true;
+    }
+
+    foreach (JobNote note in job.notes)
+    {
+
+        if (note.type == "Invoice")
+        {
+            invoiceNoteAdded = true;
+        }
+
+    }
+
+    if (labourAdded && invoiceNoteAdded)
+    {
+
+        isFinished = true;
+
+    }
 
 }
 
@@ -18,7 +40,51 @@
 
         <div class="card">
 
-            <h5 class="card-header">Job View</h5>
+            <div class="card-header" style="display: inline-block">
+
+                <div style="display: inline-block; margin-top: 8px">
+                    <h5>Job View</h5>
+                </div>
+
+                <div class="float-right" style="display: inline-block">
+
+                    @if (!invoiceNoteAdded)
+                    {
+
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addInvoiceNoteModal" style="margin-right: 4px" href="#" role="button">Add Invoice Notes</button>
+
+                    }
+
+                    @if (!labourAdded)
+                    {
+
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addLabourModal" style="margin-right: 4px" href="#" role="button">Add Actual Labour</button>
+
+                    }
+
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addNoteModal" style="margin-right: 4px" href="#" role="button">Add Note</button>
+                    <button type="submit" class="btn btn-primary" style="margin-right: 4px" href="#" role="button">Add Part</button>
+                    <button type="submit" class="btn btn-primary" style="margin-right: 4px" href="#" role="button">Job Sheet</button>
+
+                    @if (isFinished)
+                    {
+
+                        <form action="~/Job/Invoice" method="post" style="display: inline-block">
+                            <input type="hidden" id="jobID" name="jobID" value="@job.jobID">
+                            <button type="submit" class="btn btn-primary" href="" role="button">Invoice</button>
+                        </form>
+
+                    }
+                    else
+                    {
+
+                        <button type="button" class="btn btn-primary" disabled>Invoice</button>
+
+                    }
+
+                </div>
+
+            </div>
 
         </div>
 
@@ -34,28 +100,31 @@
         <div class="card">
             <h5 class="card-header">Details</h5>
             <div class="card-body">
-                <p class="card-text">Job ID: J2092361</p>
-                <p class="card-text">Status: Complete - Paid</p>
-                <p class="card-text">Updated: 24/02/2019</p>
+                <p class="card-text">Job ID: @("J" + job.jobID)</p>
+                <p class="card-text">Type: @job.type</p>
+                <p class="card-text">Status: @job.status</p>
+                <p class="card-text">Started: @job.start</p>
+                <p class="card-text">Mechanic: @job.mechanic.firstname @job.mechanic.lastname</p>
+                <p class="card-text">Bay: @job.bay</p>
             </div>
         </div>
         <br>
         <div class="card">
             <h5 class="card-header">Customer</h5>
             <div class="card-body">
-                <p class="card-text">@customer.firstname @customer.lastname</p>
-                <p class="card-text">@customer.phone</p>
-                <p class="card-text">@customer.email</p>
+                <p class="card-text">@job.customer.firstname @job.customer.lastname</p>
+                <p class="card-text">@job.customer.phone</p>
+                <p class="card-text">@job.customer.email</p>
             </div>
         </div>
         <br>
         <div class="card">
             <h5 class="card-header">Vehicle</h5>
             <div class="card-body">
-                <p><span class="registration-ui">@car.vrm</span></p>
-                <p class="card-text">Details: @car.make @car.model</p>
-                <p class="card-text">Year: @car.year</p>
-                <p class="card-text">Colour: @car.colour</p>
+                <p><span class="registration-ui">@job.vehicle.vrm</span></p>
+                <p class="card-text">Details: @job.vehicle.make @job.vehicle.model</p>
+                <p class="card-text">Year: @job.vehicle.year</p>
+                <p class="card-text">Colour: @job.vehicle.colour</p>
             </div>
         </div>
         <br>
@@ -80,7 +149,7 @@
             <h5 class="card-header">Job Notes</h5>
             <div class="card-body">
 
-                @foreach (JobNote note in notes)
+                @foreach (JobNote note in job.notes)
                 {
 
                     <div class="card">
@@ -106,70 +175,234 @@
 
         <div class="card">
 
-            <h5 class="card-header">Parts and Labour <i class="fas fa-plus"></i></h5>
+            <h5 class="card-header">Parts</h5>
+
             <div class="card-body">
 
-                @foreach (KeyValuePair<Part, int> part in parts){
+                @foreach (KeyValuePair<Part, int> part in job.parts)
+                {
 
-                <div class="card">
+                    <div class="card">
 
-                    <div class="card-body">
+                        <div class="card-body">
 
-                        <p class="card-text">@part.Key.manufacturer: @part.Key.name</p>
-                        <p class="card-text">@part.Key.partID</p>
-                        <p class="card-text">£@part.Key.price</p>
-                        <p class="card-text">Quantity: @part.Value</p>
+                            <p class="card-text">@part.Key.manufacturer: @part.Key.name</p>
+                            <p class="card-text">@part.Key.partID</p>
+                            <p class="card-text">£@part.Key.price</p>
+                            <p class="card-text">Quantity: @part.Value</p>
 
-                        @{
-                            partsTotal = partsTotal + (part.Key.price * part.Value);
-                        }
+                            @{
+                                partsTotal = partsTotal + (part.Key.price * part.Value);
+                            }
+
+                        </div>
 
                     </div>
-
-                </div>
-                <br>
+                    <br>
 
                 }
 
             </div>
-            <ul class="list-group">
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    Parts Total: £@partsTotal
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    VAT: £@((partsTotal / 100) * 20)
-                </li>
-            </ul>
             <div class="card-footer">
-                <h6>Total Inc VAT: £@(((partsTotal / 100) * 20) + partsTotal)</h6>
+                Parts Total: £@partsTotal.ToString("#.##")
             </div>
 
         </div>
 
-       <br>
+        <br>
+
+        @if (job.type == "MoT"){
+
+            <div class="card">
+
+                <div class="card-header">
+
+                    MoT Flat Rate: £50.00
+
+                </div>
+
+                @{
+                    partsTotal = partsTotal + 50;
+                }
+
+            </div>
+
+            <br>
+
+        }
 
         <div class="card">
 
             <h5 class="card-header">Labour</h5>
-            <div class="card-body">
-                <p class="card-text">Estimated Labour: @labour["Labour Estimate"] hours.</p>
-                <p class="card-text">Actual Labour: @labour["Labour Actual"] hours.</p>
-                <p class="card-text">Rate: £@mechanic.rate / hour.</p>
-            </div>
-            <div class="card-footer">
-                Labour Total: £@(labour["Labour Actual"] * @mechanic.rate)
-            </div>
+
+            <ul class="list-group">
+
+                @foreach (KeyValuePair<string, float> labour in job.labour)
+                {
+
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        @labour.Key: @labour.Value hours.
+                    </li>
+
+                }
+
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    Rate: £@job.mechanic.rate / hour.
+                </li>
+
+            </ul>
+
+            @if (!labourAdded)
+            {
+
+                labourTotal = job.labour["Labour Estimate"] * job.mechanic.rate;
+
+                <div class="card-footer">
+                    Estimated Labour Total: £@labourTotal.ToString("#.##")
+                </div>
+
+            }
+            else
+            {
+
+                labourTotal = job.labour["Labour Actual"] * job.mechanic.rate;
+
+                <div class="card-footer">
+                    Labour Total: £@labourTotal.ToString("#.##")
+                </div>
+
+            }
 
         </div>
+
         <br>
+
         <div class="card">
 
-            <h6 class="card-header">
-                Total: £@(partsTotal + (labour["Labour Actual"] * @mechanic.rate))
-            </h6>
+            @{
+
+                total = partsTotal + labourTotal;
+
+            }
+
+            <div class="card-body">
+                <p class="card-text">VAT: £@(((total / 100) * 20).ToString("#.##")) </p>
+            </div>
+
+
+            <div class="card-footer">
+                Total inc VAT: £@((total + (total / 100) * 20).ToString("#.##"))
+            </div>
 
         </div>
-        
+
     </div>
 
 </div>
+
+@*=====MODALS=====*@
+
+
+<div class="modal fade" id="addNoteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Note</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <form id="addNote" action="~/Job/AddNote" method="post">
+                    <input type="hidden" id="jobID" name="jobID" value="@job.jobID">
+                    <input type="hidden" id="type" name="type" value="Update">
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1">Notes</label>
+                        <textarea class="form-control" id="body" name="body" rows="3"></textarea>
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="submit" role="button" form="addNote" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addInvoiceNoteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Invoice Note</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <form id="addInvoiceNote" action="~/Job/AddNote" method="post">
+                    <input type="hidden" id="jobID" name="jobID" value="@job.jobID">
+                    <input type="hidden" id="type" name="type" value="Invoice">
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1">Notes</label>
+                        <textarea class="form-control" id="body" name="body" rows="3"></textarea>
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="submit" role="button" form="addInvoiceNote" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addLabourModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Invoice Note</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <form id="addInvoiceNote" action="~/Job/AddNote" method="post">
+                    <input type="hidden" id="jobID" name="jobID" value="@job.jobID">
+                    <input type="hidden" id="type" name="type" value="Invoice">
+                    <div class="form-group">
+                        <label for="exampleFormControlTextarea1">Notes</label>
+                        <textarea class="form-control" id="body" name="body" rows="3"></textarea>
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="submit" role="button" form="addInvoiceNote" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+
+    $('#addNoteModal').on('shown.bs.modal', function () {
+  $('#btn').trigger('focus')
+})
+
+    $('#addInvoiceNoteModal').on('shown.bs.modal', function () {
+  $('#btn').trigger('focus')
+})
+
+        $('#addLabourModal').on('shown.bs.modal', function () {
+  $('#btn').trigger('focus')
+})
+
+</script>

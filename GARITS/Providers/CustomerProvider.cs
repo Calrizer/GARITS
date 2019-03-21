@@ -18,14 +18,14 @@ namespace GARITS.Providers
 
         private static string connection = ConfigurationManager.ConnectionStrings["connect"].ConnectionString;
 
-        public static Customer getCustomerFromEmail(string email)
+        public static Customer getCustomerFromID(string customerID)
         {
 
             Customer customer = new Customer();
 
             using (MySqlConnection con = new MySqlConnection(connection))
             {
-                string query = "SELECT * FROM Customers WHERE email = '" + email + "'";
+                string query = "SELECT * FROM Customers WHERE customerID = '" + customerID + "'";
                 using (MySqlCommand cmd = new MySqlCommand(query))
                 {
                     cmd.Connection = con;
@@ -41,6 +41,7 @@ namespace GARITS.Providers
                                 customerID = (sdr["customerID"]).ToString(),
                                 email = sdr["email"].ToString(),
                                 registered = DateTime.Parse(sdr["registered"].ToString()),
+                                title = sdr["title"].ToString(),
                                 firstname = sdr["firstname"].ToString(),
                                 lastname = sdr["lastname"].ToString(),
                                 addressline1 = sdr["addressline1"].ToString(),
@@ -64,6 +65,39 @@ namespace GARITS.Providers
             }
 
             return customer;
+
+        }
+
+        public static string checkIfInDebt(string customerID)
+        {
+
+            string debt = "No";
+
+            using (MySqlConnection con = new MySqlConnection(connection))
+            {
+                string query = "SELECT j.jobID FROM CustomersVehicles as cv, Vehicles as v, JobVehicle as jv, Jobs as j WHERE cv.customerID = '" + customerID + "' AND v.vrm = cv.vrm AND jv.vrm = v.vrm AND j.jobID = jv.jobID AND j.status = 'Complete - Awaiting Payment'";
+                using (MySqlCommand cmd = new MySqlCommand(query))
+                {
+                    cmd.Connection = con;
+                    con.Open();
+                    using (MySqlDataReader sdr = cmd.ExecuteReader())
+                    {
+                        while (sdr.Read())
+                        {
+
+                            debt = sdr["jobID"].ToString();
+
+                        }
+
+                    }
+
+                    con.Close();
+
+                }
+
+            }
+
+            return debt;
 
         }
 

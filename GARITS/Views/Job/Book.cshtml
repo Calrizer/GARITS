@@ -1,0 +1,173 @@
+﻿@{
+    var vehicle = (Vehicle)ViewData["Vehicle"];
+    var customer = (Customer)ViewData["Customer"];
+    var debt = (string)ViewData["Debt"];
+    var mechanics = (List<User>)ViewData["Mechanic"];
+}
+
+<div class="row">
+
+    <div class="col-md-12">
+
+        <div class="card">
+
+            <div class="card-header" style="display: inline-block">
+
+                <div style="display: inline-block; margin-top: 8px">
+                    <h5>Book In Vehicle</h5>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<br>
+
+<div class="row">
+
+    @if (vehicle == null)
+    {
+
+        <div class="col-md-3">
+            <div class="card">
+                <div class="card-header">Add Registration Plate</div>
+                <div class="card-body">
+                    <p class="card-text">Enter a registration plate to book in.</p>
+
+                    <form action="~/Job/BookAddVehicle" method="post">
+                        <div class="form-group">
+                            <input name="vrm" tabindex="1" type="text" class="form-control" id="vrm" placeholder="Registration Plate">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add</button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+    }
+    else
+    {
+
+        <div class="col-md-3">
+            <div class="card">
+                <h5 class="card-header">Vehicle Details</h5>
+                <div class="card-body">
+                    <p><span class="registration-ui">@vehicle.vrm</span></p>
+                    <p class="card-text">Details: @vehicle.make @vehicle.model</p>
+                    <p class="card-text">Year: @vehicle.year</p>
+                    <p class="card-text">Colour: @vehicle.colour</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card">
+                <h5 class="card-header">Customer Details</h5>
+                <div class="card-body">
+                    <p class="card-text">@customer.firstname @customer.lastname</p>
+                    <p class="card-text">@customer.phone</p>
+                    <p class="card-text">@customer.email</p>
+                </div>
+            </div>
+        </div>
+
+        @if (debt == "No")
+        {
+
+            <div class="col-md-6">
+                <div class="card">
+                    <h5 class="card-header">Enter Job Details</h5>
+                    <div class="card-body">
+
+                        <p class="card-text">Please provide the following details to book in the vehicle.</p>
+
+                        <form action="~/Job/BookVehicle" method="post">
+
+                            <input type="hidden" id="customerID" name="customerID" value="@customer.customerID">
+                            <input type="hidden" id="vrm" name="vrm" value="@vehicle.vrm">
+
+                            <div class="form-group">
+                                <label for="type">Job Type</label>
+                                <select class="form-control" id="type" name="type">
+                                    <option>MoT</option>
+                                    <option>Repair</option>
+                                    <option>Check / Examination</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="issue">Issue</label>
+                                <textarea class="form-control" id="issue" name="issue" rows="3"></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="cosmetic">Cosmetic Condition</label>
+                                <textarea class="form-control" id="cosmetic" name="cosmetic" rows="3"></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="resolution">Proposed Resolution</label>
+                                <textarea class="form-control" id="resolution" name="resolution" rows="3"></textarea>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="labour">Estimated Labour Time</label>
+                                <input type="number" class="form-control" id="labour" name="labour">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="bay">Assign Bay</label>
+                                <input type="number" class="form-control" id="bay" name="bay">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="type">Assign Mechanic</label>
+                                <select class="form-control" id="mechanic" name="mechanic">
+
+                                    @foreach (User mechanic in mechanics)
+                                    {
+
+                                        <option value="@mechanic.username">@mechanic.firstname @mechanic.lastname</option>
+
+                                    }
+
+                                </select>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Book</button>
+
+                        </form>
+
+                        <br>
+
+                        <p class="card-text">Parts can be added and a job sheet can be produced on the next page.</p>
+
+                    </div>
+                </div>
+            </div>
+
+        }
+        else
+        {
+
+            <div class="col-md-6">
+                <div class="alert alert-danger" role="alert">
+                    <h5 class="alert-heading">Outstanding Debts</h5>
+                    <p>This customer has outstanding debts for job: <a href="#" class="alert-link">@debt</a>.</p>
+                    <p>Please take payment from the customer for this job to continue booking.</p>
+                    <p>Contact your manager if you consider this to be in error.</p>
+                    <hr>
+                    <p class="mb-0"><a href="#" class="alert-link">Take Payment</a></p>
+                </div>
+            </div>
+
+        }
+
+    }
+
+</div>
