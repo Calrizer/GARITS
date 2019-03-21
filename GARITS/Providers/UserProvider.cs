@@ -220,17 +220,18 @@ namespace GARITS.Providers
             }
         }
 
-        public static void editAccount(string username, string firstname, string lastname, string role, string password)
+        public static void editAccount(string username, string firstname, string lastname, string role, float rate, string password)
         {
             using (MySqlConnection con = new MySqlConnection(connection))
             {
-                string query = "UPDATE users SET username = @username, firstname = @firstname, lastname = @lastname, role = @role WHERE username = @username";
+                string query = "UPDATE users SET username = @username, firstname = @firstname, lastname = @lastname, role = @role, rate = @rate WHERE username = @username";
                 using (MySqlCommand cmd = new MySqlCommand(query))
                 {
                     cmd.Parameters.AddWithValue("@username", username);
                     cmd.Parameters.AddWithValue("@firstname", firstname);
                     cmd.Parameters.AddWithValue("@lastname", lastname);
-                    cmd.Parameters.AddWithValue("@lastname", username);
+                    cmd.Parameters.AddWithValue("@role", role);
+                    cmd.Parameters.AddWithValue("@rate", rate);
 
                     cmd.Connection = con;
                     con.Open();
