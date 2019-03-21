@@ -182,8 +182,6 @@ namespace GARITS.Providers
                 string query = "INSERT INTO users VALUES (@username, @password, @firstname, @lastname, @role)";
                 using (MySqlCommand cmd = new MySqlCommand(query))
                 {
-
-
                     cmd.Parameters.AddWithValue("@username", newUser.username);
                     cmd.Parameters.AddWithValue("@password", password);
                     cmd.Parameters.AddWithValue("@firstname", newUser.firstname);
@@ -196,11 +194,49 @@ namespace GARITS.Providers
                     cmd.ExecuteNonQuery();
 
                     con.Close();
-
                 }
-
             }
+        }
 
+        public static void removeUser(string username)
+        {
+            using (MySqlConnection con = new MySqlConnection(connection))
+            {
+                string query = "DELETE FROM users WHERE username = @username";
+                using (MySqlCommand cmd = new MySqlCommand(query))
+                {
+                    cmd.Parameters.AddWithValue("@username", username);
+
+                    cmd.Connection = con;
+                    con.Open();
+
+                    cmd.ExecuteNonQuery();
+
+                    con.Close();
+                }
+            }
+        }
+
+        public static void editAccount(string username, string firstname, string lastname, string role, string password)
+        {
+            using (MySqlConnection con = new MySqlConnection(connection))
+            {
+                string query = "UPDATE users SET username = @username, firstname = @firstname, lastname = @lastname, role = @role WHERE username = @username";
+                using (MySqlCommand cmd = new MySqlCommand(query))
+                {
+                    cmd.Parameters.AddWithValue("@username", username);
+                    cmd.Parameters.AddWithValue("@firstname", firstname);
+                    cmd.Parameters.AddWithValue("@lastname", lastname);
+                    cmd.Parameters.AddWithValue("@lastname", username);
+
+                    cmd.Connection = con;
+                    con.Open();
+
+                    cmd.ExecuteNonQuery();
+
+                    con.Close();
+                }
+            }
         }
 
 

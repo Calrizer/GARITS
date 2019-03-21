@@ -55,7 +55,7 @@ namespace GARITS.Controllers
 
                 if (UserProvider.getUserFromUsername(username).role == "admin")
                 {
-                    return RedirectToAction("Index", "admin");
+                    return RedirectToAction("Dashboard", "admin");
                 } else {
                     return RedirectToAction("index", "home");
                 }

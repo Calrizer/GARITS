@@ -16,7 +16,7 @@ namespace GARITS.Controllers
     public class AdminController : Controller
     {
         // GET: /<controller>/
-        public IActionResult Index()
+        public IActionResult Dashboard()
         {
             if (!isAuthenticated())
             {
@@ -58,6 +58,18 @@ namespace GARITS.Controllers
 
 
             UserProvider.addUser(user, password);
+            return RedirectToAction("ManageAccounts");
+        }
+
+        public IActionResult RemoveAccount(string username)
+        {
+            UserProvider.removeUser(username);
+            return RedirectToAction("ManageAccounts");
+        }
+
+        public IActionResult EditAccount(string username, string firstname, string lastname, string role, string password)
+        {
+            UserProvider.editAccount(username, firstname, lastname, role, password);
             return RedirectToAction("ManageAccounts");
         }
 
