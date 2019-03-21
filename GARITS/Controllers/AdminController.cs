@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.IO;
@@ -34,8 +35,50 @@ namespace GARITS.Controllers
 
             }
 
+            ViewData["User"] = getAuthenticatedUser();
+
             return View();
 
+        }
+
+        public IActionResult ManageAccounts()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public IActionResult CreateAccount()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult CreateAccount(string username, string firstname, string lastname, string role, string password)
+        {
+
+            User user = new User
+            {
+                username = username,
+                firstname = firstname,
+                lastname = lastname,
+                role = role
+            };
+
+
+            UserProvider.addUser(user, password);
+            return RedirectToAction("ManageAccounts");
+        }
+
+        public IActionResult RemoveAccount(string username)
+        {
+            UserProvider.removeUser(username);
+            return RedirectToAction("ManageAccounts");
+        }
+
+        public IActionResult EditAccount(string username, string firstname, string lastname, string role, float rate, string password)
+        {
+            UserProvider.editAccount(username, firstname, lastname, role, rate, password);
+            return RedirectToAction("ManageAccounts");
         }
 
         public IActionResult Users()
@@ -57,6 +100,16 @@ namespace GARITS.Controllers
             return View();
 
         }
+
+
+        public IActionResult Contact()
+        {
+            ViewData["Message"] = "Your contact page.";
+
+            return View();
+
+        }
+
 
         private bool isAuthenticated()
         {
