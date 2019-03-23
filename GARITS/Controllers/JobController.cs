@@ -15,10 +15,10 @@ namespace GARITS.Controllers
     {
         // GET: /<controller>/
 
-        public IActionResult ViewJob()
+        public IActionResult ViewJob(string id)
         {
 
-            string jobID = (string)TempData["JobID"];
+            string jobID = id;
 
             ViewData["JobDetails"] = JobProvider.getJobDetails(jobID);
 
@@ -85,7 +85,7 @@ namespace GARITS.Controllers
 
             TempData["JobID"] = job.jobID;
 
-            return RedirectToAction("ViewJob");
+            return RedirectToAction("ViewJob", new { id = job.jobID });
 
         }
 
@@ -118,8 +118,6 @@ namespace GARITS.Controllers
         public IActionResult AddNote(string type, string body, string jobID)
         {
 
-            Console.Out.WriteLine(body);
-
             JobNote note = new JobNote
             {
 
@@ -135,7 +133,7 @@ namespace GARITS.Controllers
 
             TempData["JobID"] = jobID;
 
-            return RedirectToAction("ViewJob", "Job");
+            return RedirectToAction("ViewJob", "Job", new { id = jobID });
 
         }
 
