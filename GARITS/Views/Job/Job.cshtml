@@ -6,6 +6,7 @@
     var partsTotal = 0.0;
     var labourTotal = 0.0;
     var total = 0.0;
+    var discount = 0.0;
     var labourAdded = false;
     var invoiceNoteAdded = false;
     var isFinished = false;
@@ -66,7 +67,11 @@
 
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addNoteModal" style="margin-right: 4px" href="#" role="button">Add Note</button>
                     <button type="submit" class="btn btn-primary" style="margin-right: 4px" href="#" role="button">Add Part</button>
-                    <button type="submit" class="btn btn-primary" style="margin-right: 4px" href="#" role="button">Job Sheet</button>
+                    
+                    <form action="~/Job/JobSheet" method="post" style="display: inline-block">
+                        <input type="hidden" id="jobID" name="jobID" value="@job.jobID">
+                        <button type="submit" class="btn btn-primary" href="" role="button">Job Sheet</button>
+                    </form>
 
                     @if (isFinished)
                     {
@@ -277,16 +282,56 @@
             }
 
         </div>
-
+        
         <br>
+        
+        @{
+
+            total = partsTotal + labourTotal;
+
+        }
+        
+            
+        @if (job.discount.mot > 0)
+            {
+
+                discount = (total / 100) * job.discount.mot;
+                
+                <div class="card">
+                    <div class="card-body">
+                        <p class="card-text">MoT Discount: £@(((total / 100) * job.discount.mot).ToString("#.##")) </p>
+                    </div>
+                </div>
+                <br>
+                
+            }else if (job.discount.other > 0)
+            {
+                
+                discount = (total / 100) * job.discount.other;
+                
+                <div class="card">
+                    <div class="card-body">
+                        <p class="card-text">Discount: £@(((total / 100) * job.discount.other).ToString("#.##")) </p>
+                    </div>
+                </div>
+                <br>
+                    
+            }
+            else if (job.discount.credit > 0)
+            {
+                
+                discount = job.discount.credit;
+                
+                <div class="card">
+                    <div class="card-body">
+                        <p class="card-text">Discount Credit: £@(job.discount.credit).ToString("#.##")) </p>
+                    </div>
+                </div>
+                <br>
+                
+            }        
 
         <div class="card">
-
-            @{
-
-                total = partsTotal + labourTotal;
-
-            }
 
             <div class="card-body">
                 <p class="card-text">VAT: £@(((total / 100) * 20).ToString("#.##")) </p>
@@ -294,7 +339,7 @@
 
 
             <div class="card-footer">
-                Total inc VAT: £@((total + (total / 100) * 20).ToString("#.##"))
+                Total inc VAT and Discounts: £@(((total + (total / 100) * 20) - discount).ToString("#.##"))
             </div>
 
         </div>
@@ -368,7 +413,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Add Invoice Note</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Add Labour TIO</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>

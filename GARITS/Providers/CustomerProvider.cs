@@ -101,6 +101,43 @@ namespace GARITS.Providers
 
         }
 
+        public static Discount getDiscounts(string customerID)
+        {
+            
+            Discount discount = new Discount();
+
+            using (MySqlConnection con = new MySqlConnection(connection))
+            {
+                string query = "SELECT * FROM Discounts WHERE customerID = '" + customerID + "'";
+                using (MySqlCommand cmd = new MySqlCommand(query))
+                {
+                    cmd.Connection = con;
+                    con.Open();
+                    using (MySqlDataReader sdr = cmd.ExecuteReader())
+                    {
+                        while (sdr.Read())
+                        {
+
+                            discount.customer = getCustomerFromID(sdr["customerID"].ToString());
+                            discount.mot = Int32.Parse(sdr["mot"].ToString());
+                            discount.parts = Int32.Parse(sdr["parts"].ToString());
+                            discount.other = Int32.Parse(sdr["other"].ToString());
+                            discount.credit = float.Parse(sdr["credit"].ToString());
+
+                        }
+
+                    }
+
+                    con.Close();
+
+                }
+
+            }
+
+            return discount;
+            
+        }
+
     }
 
 }

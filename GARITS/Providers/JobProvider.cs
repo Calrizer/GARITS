@@ -63,6 +63,7 @@ namespace GARITS.Providers
                             job.status = sdr["status"].ToString();
                             job.type = sdr["type"].ToString();
                             job.customer = VehicleProvider.getCustomerFromVehicle(getVehicleFromJob(jobID).vrm);
+                            job.discount = CustomerProvider.getDiscounts(VehicleProvider.getCustomerFromVehicle(getVehicleFromJob(jobID).vrm).customerID);
                             job.vehicle = getVehicleFromJob(jobID);
                             job.notes = getJobNotes(jobID);
                             job.parts = getPartsForJob(jobID);
@@ -265,6 +266,49 @@ namespace GARITS.Providers
 
             return note;
 
+
+        }
+        
+        public static JobNote getEstimateNote(string jobID)
+        {
+
+            JobNote note = new JobNote();
+
+            using (MySqlConnection con = new MySqlConnection(connection))
+            {
+                string query = "SELECT notes.* FROM JobNotes AS notes, JobNotesJob AS job WHERE job.jobID = '" + jobID + "' AND notes.noteID = job.noteID AND notes.type = 'Estimate'";
+                using (MySqlCommand cmd = new MySqlCommand(query))
+                {
+                    cmd.Connection = con;
+                    con.Open();
+                    using (MySqlDataReader sdr = cmd.ExecuteReader())
+                    {
+                        while (sdr.Read())
+                        {
+
+                            note = new JobNote
+                            {
+
+                                id = (sdr["noteID"]).ToString(),
+                                body = sdr["body"].ToString(),
+                                type = sdr["type"].ToString(),
+                                time = DateTime.Parse(sdr["time"].ToString()),
+                                user = UserProvider.getUserFromUsername(sdr["username"].ToString())
+
+
+                            };
+
+                        }
+
+                    }
+
+                    con.Close();
+
+                }
+
+            }
+
+            return note;
 
         }
 

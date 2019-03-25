@@ -14,6 +14,7 @@ namespace GARITS.Models
         public string status { get; set; }
         public string type { get; set; }
         public Customer customer { get; set; }
+        public Discount discount { get; set; }
         public Vehicle vehicle { get; set; }
         public List<JobNote> notes { get; set; }
         public Dictionary<Part, int> parts { get; set; }

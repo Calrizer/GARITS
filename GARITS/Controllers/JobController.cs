@@ -115,6 +115,17 @@ namespace GARITS.Controllers
         }
 
         [HttpPost]
+        public IActionResult JobSheet(string jobID)
+        {
+
+            ViewData["EstimateNote"] = JobProvider.getEstimateNote(jobID);
+            ViewData["JobDetails"] = JobProvider.getJobDetails(jobID);
+            
+            return View("JobSheet");
+
+        }
+
+        [HttpPost]
         public IActionResult AddNote(string type, string body, string jobID)
         {
 
