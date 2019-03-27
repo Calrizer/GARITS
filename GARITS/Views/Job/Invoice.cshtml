@@ -5,6 +5,7 @@
     var job = (Job)ViewData["JobDetails"];
     var partsTotal = 0.0;
     var labourTotal = 0.0;
+    var discount = 0.0;
     var total = 0.0;
     var month = "";
 
@@ -156,7 +157,35 @@
             </tr>
 
         }
+        
+        @if (job.type == "MoT")
+        {
+            
+            <tr>
 
+                <td>
+                    MoT Flat Rate
+                </td>
+                <td>
+                    
+                </td>
+                <td>
+                    £50.00
+                </td>
+                <td>
+                    1
+                </td>
+                <td>
+                    £50.00
+                </td>
+                @{
+                    partsTotal = partsTotal + 50.00;
+                }
+
+            </tr>
+            
+        }
+ 
         <tr class="labour">
 
             <td>
@@ -199,6 +228,67 @@
             </td>
 
         </tr>
+        
+        @if (job.discount.mot > 0 && job.type == "MoT")
+        {
+
+            discount = discount + (total / 100) * job.discount.mot;
+                
+            <tr>
+
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    MoT Discount
+                </td>
+                <td>
+                    £@(((total / 100) * job.discount.mot).ToString("#.##"))
+                </td>
+
+            </tr>
+                
+        }else if (job.discount.other > 0)
+        {
+                
+            discount = discount + (total / 100) * job.discount.other;
+                
+            <tr>
+
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    Discount
+                </td>
+                <td>
+                    £@(((total / 100) * job.discount.other).ToString("#.##"))
+                </td>
+
+            </tr>
+                    
+        }
+        
+        @if (job.discount.credit > 0)
+        {
+                
+            discount = discount + job.discount.credit;
+                
+            <tr>
+
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    Discount Credit
+                </td>
+                <td>
+                    £@((job.discount.credit).ToString("#.##"))
+                </td>
+
+            </tr>
+                
+        }        
 
         <tr>
 
@@ -223,7 +313,7 @@
                 Grand Total
             </td>
             <td>
-                £@((total + (total / 100) * 20).ToString("#.##"))
+                £@(((total + (total / 100) * 20) - discount).ToString("#.##"))
             </td>
 
         </tr>

@@ -152,6 +152,36 @@ namespace GARITS.Providers
 
         }
 
+        public static void addVehicle(Vehicle vehicle)
+        {
+            
+            using (MySqlConnection con = new MySqlConnection(connection))
+            {
+                string query = "INSERT INTO Vehicles VALUES (@vrm, @make, @model, @year, @serial, @chassis, @colour)";
+                using (MySqlCommand cmd = new MySqlCommand(query))
+                {
+
+                    cmd.Parameters.AddWithValue("@vrm", vehicle.vrm);
+                    cmd.Parameters.AddWithValue("@make", vehicle.make);
+                    cmd.Parameters.AddWithValue("@model", vehicle.model);
+                    cmd.Parameters.AddWithValue("@year", vehicle.year);
+                    cmd.Parameters.AddWithValue("@serial", vehicle.engine);
+                    cmd.Parameters.AddWithValue("@chassis", vehicle.chassis);
+                    cmd.Parameters.AddWithValue("@colour", vehicle.colour);
+                    
+                    cmd.Connection = con;
+                    con.Open();
+
+                    cmd.ExecuteNonQuery();
+
+                    con.Close();
+
+                }
+
+            }
+            
+        }
+
     }
 
 }

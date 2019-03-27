@@ -8,6 +8,7 @@
 
 @{
     var user = (User)ViewData["User"];
+    ViewData["Name"] = user.firstname + " " + user.lastname;
 }
 
 <div class="row">

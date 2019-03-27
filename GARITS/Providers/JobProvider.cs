@@ -12,6 +12,7 @@ using System.Security.Cryptography;
 using System.Text;
 using MySql.Data.MySqlClient;
 using GARITS.Providers;
+
 namespace GARITS.Providers
 {
     public static class JobProvider
@@ -69,7 +70,6 @@ namespace GARITS.Providers
                             job.parts = getPartsForJob(jobID);
                             job.labour = getLabour(jobID);
                             job.mechanic = getAssigedMechanic(jobID);
-
                           
                         }
 

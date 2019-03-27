@@ -1,0 +1,99 @@
+@{
+
+    var parts = (List<Part>) ViewData["Parts"];
+    var search = (string) ViewData["Search"];
+    var jobID = (string) ViewData["JobID"];
+    var vehicle = (Vehicle) ViewData["Vehicle"];
+    
+}
+
+
+<div class="row">
+
+    <div class="col-md-12">
+
+        <div class="card">
+
+            <div class="card-header" style="display: inline-block">
+
+                <div style="display: inline-block; margin-top: 8px">
+                    <h5>Add Part</h5>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<br>
+
+<div class="row">
+    
+    <div class="col-md-3">
+        
+        <div class="card">
+            
+            <h5 class="card-header">Search</h5>
+            <div class="card-body">
+                <form action="~/Job/AddPart" method="post">
+                    <div class="form-group">
+                        <input type="hidden" name="jobID" id="jobID" value="@jobID"/>
+                        <input name="search" tabindex="1" type="text" class="form-control" id="search" placeholder="Search">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
+                
+            </div>
+            
+        </div>
+        
+        <br>
+    
+        <div class="card">
+            <h5 class="card-header">Vehicle</h5>
+            <div class="card-body">
+                <p><span class="registration-ui">@vehicle.vrm</span></p>
+                <p class="card-text">Details: @vehicle.make @vehicle.model</p>
+                <p class="card-text">Year: @vehicle.year</p>
+                <p class="card-text">Colour: @vehicle.colour</p>
+            </div>
+        </div>
+        
+    </div>
+
+    <div class="col-md-9 parts-list">
+
+        <h6 style="margin-top: 6px">Results for "@search".</h6>
+        <p>@parts.Count results found.</p>
+        
+        <hr>
+        
+        @foreach (Part part in parts)
+        {
+            
+            <h5>@part.name</h5>
+            <p>ID: @part.partID  |  @part.quantity in stock.</p>
+            <p>@part.manufacturer @part.vehicle  |  @part.years</p>
+            <p><b>£@part.price</b></p>
+                                  
+            <form action="~/Job/AssignPart" class="form-inline" method="post">
+                <div class="form-group" style="margin-top: 10px">
+                    <input type="hidden" name="partID" id="partID" value="@part.partID"/>
+                    <input type="hidden" name="jobID" id="jobID" value="@jobID"/>
+                    <button role="button" style="display: inline-block; margin-right: 10px" type="submit" class="btn btn-primary">Add</button>
+                    <input type="number" style="display: inline-block; width: 50px; margin-right: 10px" name="quantity" class="form-control" id="quantity" value="1"/>
+                    <p>Quantity</p>
+                </div>
+            </form>
+            
+            <hr>
+
+        }
+
+    </div>
+
+</div>
+

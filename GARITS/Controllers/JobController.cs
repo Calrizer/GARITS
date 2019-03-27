@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Policy;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
@@ -89,11 +90,14 @@ namespace GARITS.Controllers
 
         }
 
-        [HttpPost]
         public IActionResult BookAddVehicle(string vrm)
         {
 
-            ViewData["Vehicle"] = VehicleProvider.getVehicleFromVRM(vrm);
+            Vehicle vehicle = VehicleProvider.getVehicleFromVRM(vrm);
+
+            if (vehicle.vrm == null) return RedirectToAction("AddVehicle", "Vehicle", new {vrm = vrm});
+
+            ViewData["Vehicle"] = vehicle;
             Customer customer = VehicleProvider.getCustomerFromVehicle(vrm);
             ViewData["Customer"] = customer;
             ViewData["Debt"] = CustomerProvider.checkIfInDebt(customer.customerID);
@@ -148,7 +152,65 @@ namespace GARITS.Controllers
 
         }
 
+        [HttpPost]
+        public IActionResult AddPart(string jobID, string search)
+        {
 
+            List<Part> parts = new List<Part>();
+
+            Dictionary<Part, int> existing = JobProvider.getPartsForJob(jobID);
+            
+            String[] terms = search.Split(" ");
+
+            foreach (String term in terms)
+            {
+                foreach (Part result in PartsProvider.searchForParts(term))
+                {
+
+                    bool contains = false;
+                    
+                    foreach (Part check in parts)
+                    {
+
+                        if (check.partID == result.partID) contains = true;
+
+                    }
+
+                    foreach (KeyValuePair<Part, int> existingPart in existing)
+                    {
+                        
+                        if (existingPart.Key.partID == result.partID) contains = true;
+                        
+                    }
+
+                    if (!contains)
+                    {
+                        
+                        parts.Add(result);
+                        
+                    }
+                    
+                }
+                
+            }
+            
+            ViewData["Parts"] = parts;
+            ViewData["Search"] = search;
+            ViewData["JobID"] = jobID;
+            ViewData["Vehicle"] = JobProvider.getVehicleFromJob(jobID);
+
+            return View("AddPart");
+
+        }
+
+        public IActionResult AssignPart(string jobID, string partID, string quantity)
+        {
+
+            PartsProvider.assignPartToJob(jobID, partID, Int32.Parse(quantity));
+            
+            return RedirectToAction("ViewJob", new {id = jobID});
+
+        }
 
     }
 

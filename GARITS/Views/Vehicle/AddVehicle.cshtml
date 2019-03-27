@@ -1,0 +1,113 @@
+
+@{
+
+    var dvla = (DVLAData) ViewData["DVLADetails"];
+    
+}
+
+<div class="row">
+
+    <div class="col-md-12">
+
+        <div class="card">
+
+            <div class="card-header" style="display: inline-block">
+
+                <div style="display: inline-block; margin-top: 8px">
+                    <h5>Add New Vehicle</h5>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<br>
+
+<div class="row">
+    
+    <div class="col-md-3">
+
+        <div class="card">
+            <div class="card-header">
+                DVLA Details
+            </div>
+            <div class="card-body">
+                <p><span class="registration-ui">@dvla.vrm</span></p>
+                <p class="card-text">Details: @dvla.make @dvla.model @dvla.varient</p>
+                <p class="card-text">Year: @dvla.year</p>
+                <p class="card-text">Fuel: @dvla.fuel</p>
+            </div>
+        </div>
+    
+    </div>
+    
+    <div class="col-md-9">
+
+        <div class="card">
+            <div class="card-header">
+                Enter Vehicle Details
+            </div>
+            <div class="card-body">
+                
+                @if (dvla.vrm != null)
+                {
+                    
+                    <div class="alert alert-primary" role="alert">
+                        Data from the DVLA has been autofilled. Please review and verify information is correct.
+                    </div>
+                    
+                }
+ 
+                <p class="card-text">Please provide the following details to add a new vehicle.</p>
+
+                <form action="~/Vehicle/RegisterVehicle" method="post">
+
+                    <div class="form-group">
+                        <label for="vrm">Registration Plate</label>
+                        <input type="text" class="form-control" id="vrm" name="vrm" value="@dvla.vrm">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="make">Make</label>
+                        <input type="text" class="form-control" id="make" name="make" value="@dvla.make">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="model">Model</label>
+                        <input type="text" class="form-control" id="model" name="model" value="@dvla.model">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="year">Year</label>
+                        <input type="number" class="form-control" id="year" name="year" value="@dvla.year">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="colour">Colour</label>
+                        <input type="text" class="form-control" id="colour" name="colour">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="serial">Engine Serial Number</label>
+                        <input type="text" class="form-control" id="serial" name="serial">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="chassis">Chassis Number</label>
+                        <input type="text" class="form-control" id="chassis" name="chassis">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Add</button>
+
+                </form>
+
+            </div>
+        </div>
+    
+    </div>
+
+</div>

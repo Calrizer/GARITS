@@ -1,0 +1,116 @@
+
+@{
+
+    var vehicle = (Vehicle) ViewData["Vehicle"];
+    
+}
+
+<div class="row">
+
+    <div class="col-md-12">
+
+        <div class="card">
+
+            <div class="card-header" style="display: inline-block">
+
+                <div style="display: inline-block; margin-top: 8px">
+                    <h5>Add New Customer</h5>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<br>
+
+<div class="row">
+    
+    <div class="col-md-3">
+
+        <div class="card">
+            <div class="card-header">
+                Vehicle
+            </div>
+            <div class="card-body">
+                <p><span class="registration-ui">@vehicle.vrm</span></p>
+                <p class="card-text">Details: @vehicle.make @vehicle.model</p>
+                <p class="card-text">Year: @vehicle.year</p>
+                <p class="card-text">Colour: @vehicle.colour</p>
+            </div>
+        </div>
+    
+    </div>
+    
+    <div class="col-md-9">
+
+        <div class="card">
+            <div class="card-header">
+                Enter Customer Details
+            </div>
+            <div class="card-body">
+ 
+                <p class="card-text">Please provide the following details to add a new customer.</p>
+
+                <form action="~/Customer/RegisterCustomerWithVehicle" method="post">
+
+                    <input type="hidden" class="form-control" id="vrm" name="vrm" value="@vehicle.vrm">
+                    
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" class="form-control" id="title" name="title">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="firstname">First Name</label>
+                        <input type="text" class="form-control" id="firstname" name="firstname">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="lastname">Last Name</label>
+                        <input type="text" class="form-control" id="lastname" name="lastname">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" name="email">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="tel">Phone</label>
+                        <input type="tel" class="form-control" id="tel" name="tel">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="address1">Address Line One</label>
+                        <input type="text" class="form-control" id="address1" name="address1">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="address2">Address Line Two</label>
+                        <input type="text" class="form-control" id="address2" name="address2">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="county">County</label>
+                        <input type="text" class="form-control" id="county" name="county">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="postcode">Post Code</label>
+                        <input type="text" class="form-control" id="postcode" name="postcode">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Add</button>
+
+                </form>
+
+            </div>
+        </div>
+    
+    </div>
+
+</div>

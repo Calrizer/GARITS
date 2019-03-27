@@ -66,7 +66,7 @@
                     }
 
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addNoteModal" style="margin-right: 4px" href="#" role="button">Add Note</button>
-                    <button type="submit" class="btn btn-primary" style="margin-right: 4px" href="#" role="button">Add Part</button>
+                    <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#addPartModal" style="margin-right: 4px" href="#" role="button">Add Part</button>
                     
                     <form action="~/Job/JobSheet" method="post" style="display: inline-block">
                         <input type="hidden" id="jobID" name="jobID" value="@job.jobID">
@@ -188,7 +188,7 @@
 
                 @foreach (KeyValuePair<Part, int> part in job.parts)
                 {
-
+                    
                     <div class="card">
 
                         <div class="card-body">
@@ -198,6 +198,19 @@
                             <p class="card-text">£@part.Key.price</p>
                             <p class="card-text">Quantity: @part.Value</p>
 
+                            @{
+                                String[] years = part.Key.years.Split("-");
+                            }
+                            
+                            @if (part.Key.manufacturer != job.vehicle.make || part.Key.vehicle != job.vehicle.model || !years.Contains(job.vehicle.year))
+                            {
+                         
+                            <div class="alert alert-warning" role="alert">
+                                Info: From this part's information, it could be incompatible with this job's vehicle. Please ensure that the part is compatible before proceeding with the job.
+                            </div>
+                         
+                            }
+                            
                             @{
                                 partsTotal = partsTotal + (part.Key.price * part.Value);
                             }
@@ -292,14 +305,14 @@
         }
         
             
-        @if (job.discount.mot > 0)
+        @if (job.discount.mot > 0 && job.type == "MoT")
             {
 
-                discount = (total / 100) * job.discount.mot;
+                discount = discount + (total / 100) * job.discount.mot;
                 
                 <div class="card">
-                    <div class="card-body">
-                        <p class="card-text">MoT Discount: £@(((total / 100) * job.discount.mot).ToString("#.##")) </p>
+                    <div class="card-header">
+                        MoT Discount: £@(((total / 100) * job.discount.mot).ToString("#.##"))
                     </div>
                 </div>
                 <br>
@@ -307,29 +320,30 @@
             }else if (job.discount.other > 0)
             {
                 
-                discount = (total / 100) * job.discount.other;
+                discount = discount + (total / 100) * job.discount.other;
                 
                 <div class="card">
-                    <div class="card-body">
-                        <p class="card-text">Discount: £@(((total / 100) * job.discount.other).ToString("#.##")) </p>
+                    <div class="card-header">
+                        Discount: £@(((total / 100) * job.discount.other).ToString("#.##"))
                     </div>
                 </div>
                 <br>
                     
             }
-            else if (job.discount.credit > 0)
+        
+        @if (job.discount.credit > 0)
             {
                 
-                discount = job.discount.credit;
+                discount = discount + job.discount.credit;
                 
                 <div class="card">
-                    <div class="card-body">
-                        <p class="card-text">Discount Credit: £@(job.discount.credit).ToString("#.##")) </p>
+                    <div class="card-header">
+                        Discount Credit: £@(job.discount.credit).ToString("#.##"))
                     </div>
                 </div>
                 <br>
                 
-            }        
+         }        
 
         <div class="card">
 
@@ -413,7 +427,7 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Add Labour TIO</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Add Labour Time</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -438,6 +452,34 @@
     </div>
 </div>
 
+<div class="modal fade" id="addPartModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Search For Part</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+
+                <form id="addPart" action="~/Job/AddPart" method="post">
+                    <input type="hidden" id="jobID" name="jobID" value="@job.jobID">
+                    <div class="form-group">
+                        <label for="body">Search for part by: name, ID, manufacturer or vehicle model.</label>
+                        <input type= "text" class="form-control" id="search" name="search">
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="submit" role="button" form="addPart" class="btn btn-primary">Search</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <script>
 
@@ -452,5 +494,9 @@
         $('#addLabourModal').on('shown.bs.modal', function () {
   $('#btn').trigger('focus')
 })
+    
+    $('#addPartModal').on('shown.bs.modal', function () {
+        $('#btn').trigger('focus')
+    })
 
 </script>

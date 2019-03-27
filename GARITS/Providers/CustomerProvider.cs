@@ -67,6 +67,65 @@ namespace GARITS.Providers
             return customer;
 
         }
+        
+        public static void addCustomer(Customer customer)
+        {
+            
+            using (MySqlConnection con = new MySqlConnection(connection))
+            {
+                string query = "INSERT INTO Customers VALUES (@customerID, @email, @registered, @title, @firstname, @lastname, @addressLine1, @addressLine2, @county, @postcode, @tel)";
+                using (MySqlCommand cmd = new MySqlCommand(query))
+                {
+
+                    cmd.Parameters.AddWithValue("@customerID", customer.customerID);
+                    cmd.Parameters.AddWithValue("@email", customer.email);
+                    cmd.Parameters.AddWithValue("@registered", customer.registered);
+                    cmd.Parameters.AddWithValue("@title", customer.title);
+                    cmd.Parameters.AddWithValue("@firstname", customer.firstname);
+                    cmd.Parameters.AddWithValue("@lastname", customer.lastname);
+                    cmd.Parameters.AddWithValue("@addressLine1", customer.addressline1);
+                    cmd.Parameters.AddWithValue("@addressLine2", customer.addressline2);
+                    cmd.Parameters.AddWithValue("@county", customer.county);
+                    cmd.Parameters.AddWithValue("@postcode", customer.postcode);
+                    cmd.Parameters.AddWithValue("@tel", customer.phone);
+                    
+                    cmd.Connection = con;
+                    con.Open();
+
+                    cmd.ExecuteNonQuery();
+
+                    con.Close();
+
+                }
+
+            }
+            
+        }
+
+        public static void assignVehicle(string vrm, string customerID)
+        {
+            
+            using (MySqlConnection con = new MySqlConnection(connection))
+            {
+                string query = "INSERT INTO CustomersVehicles VALUES (@vrm, @customerID)";
+                using (MySqlCommand cmd = new MySqlCommand(query))
+                {
+
+                    cmd.Parameters.AddWithValue("@vrm", vrm);
+                    cmd.Parameters.AddWithValue("@customerID", customerID);
+                    
+                    cmd.Connection = con;
+                    con.Open();
+
+                    cmd.ExecuteNonQuery();
+
+                    con.Close();
+
+                }
+
+            }
+            
+        }
 
         public static string checkIfInDebt(string customerID)
         {
