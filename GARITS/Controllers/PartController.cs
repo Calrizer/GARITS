@@ -13,7 +13,7 @@ namespace GARITS.Controllers
     {
         public IActionResult Parts()
         {
-            ViewData["Parts"] = PartProvider.getParts();
+            ViewData["Parts"] = PartsProvider.getParts();
             return View();
         }
 
@@ -37,7 +37,7 @@ namespace GARITS.Controllers
                 quantity = quantity,
                 threshold = threshold
             };
-            PartProvider.addNewPart(part);
+            PartsProvider.addNewPart(part);
 
             return RedirectToAction("Parts");
 
@@ -46,7 +46,7 @@ namespace GARITS.Controllers
         [HttpGet]
         public IActionResult ChangePartDetails(string partID)
         {
-            ViewData["Part"] = PartProvider.getPartFromID(partID);
+            ViewData["Part"] = PartsProvider.getPartFromID(partID);
             return View();
         }
 
@@ -64,21 +64,21 @@ namespace GARITS.Controllers
                 quantity = quantity,
                 threshold = threshold
             };
-            PartProvider.editPartDetails(part);
+            PartsProvider.editPartDetails(part);
             return RedirectToAction("Parts");
         }
 
         [HttpGet]
         public IActionResult ReplenishStock()
         {
-            ViewData["Parts"] = PartProvider.getLowStockParts();
+            ViewData["Parts"] = PartsProvider.getLowStockParts();
             return View();
         }
 
         [HttpPost]
         public IActionResult ReplenishStock(string partID, int quantity)
         {
-            PartProvider.replenishStock(partID, quantity);
+            PartsProvider.replenishStock(partID, quantity);
             return RedirectToAction("ReplenishStock");
         }
     }
