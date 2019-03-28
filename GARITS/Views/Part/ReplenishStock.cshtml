@@ -1,0 +1,49 @@
+﻿
+@{
+    ViewData["Title"] = "ReplenishStock";
+}
+
+@using GARITS.Models
+@using GARITS.Providers
+@using System.Collections
+
+@model Part
+
+@{ 
+    var parts = (List<Part>)ViewData["Parts"];
+}
+
+
+<!doctype html>
+<html lang="en">
+<body>
+    <h2>Replenish Stock</h2>
+
+    @if (parts.Count() == 0)
+    {
+        <label>No parts need restocking</label>
+    }
+    else
+    {
+
+        @foreach (Part part in parts)
+        {
+
+
+            <div style="display: inline-block">
+                <form action="~/Part/ReplenishStock">
+                    <label for="name">@part.name</label>
+                    <input type="hidden" name="partID" readonly value="@part.partID">
+                    <input name="quantity" type="number" placeholder="Number bought">
+                    <button type="submit" class="btn btn-primary">Add to stock</button>
+                </form>
+            </div>
+        }
+    }
+
+
+    <div align="right">
+        <a class="btn btn-primary" role="button" asp-action="Parts">Back</a>
+    </div>
+</body>
+</html>

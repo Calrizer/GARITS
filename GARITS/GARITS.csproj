@@ -22,7 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Providers\" />
     <Folder Include="Views\Auth\" />
     <Folder Include="Views\Admin\" />
     <Folder Include="Views\Job\" />
