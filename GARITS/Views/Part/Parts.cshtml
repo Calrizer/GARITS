@@ -1,0 +1,136 @@
+﻿
+@{
+    ViewData["Title"] = "Parts";
+}
+
+@using GARITS.Models
+@using GARITS.Providers
+@using System.Collections
+
+@model Part
+
+@{
+    var parts = (List<Part>)ViewData["Parts"];
+    bool isLowStock = false;
+}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <style>
+        tr.isLowStock {
+            background-color: tomato
+        }
+
+    </style>
+</head>
+
+<body>
+    <h2>Parts</h2>
+
+    <div>
+        <table class="table" id="userTable">
+
+            <thead>
+                <tr>
+                    <th>PartId</th>
+                    <th>Name</th>
+                    <th>Manufacturer</th>
+                    <th>Vehicle</th>
+                    <th>Years</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Threshold</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (Part part in parts)
+
+                {
+                    isLowStock = false;
+                    if (part.quantity <= part.threshold)
+                    {
+                        isLowStock = true;
+                    }
+                        @if (isLowStock)
+                        {
+                        <tr class="isLowStock">
+                            <td id="partID">
+                                @part.partID
+                            </td>
+                            <td id="name">
+                                @part.name
+                            </td>
+                            <td id="manufacturer">
+                                @part.manufacturer
+                            </td>
+                            <td id="vehicle">
+                                @part.vehicle
+                            </td>
+                            <td id="years">
+                                @part.years
+                            </td>
+                            <td id="price">
+                                @part.price
+                            </td>
+                            <td id="quantity">
+                                @part.quantity
+                            </td>
+                            <td id="threshold">
+                                @part.threshold
+                            </td>
+                        </tr>
+
+                        }
+                        else
+                        {
+                        <tr>
+                            <td id="partID">
+                                @part.partID
+                            </td>
+                            <td id="name">
+                                @part.name
+                            </td>
+                            <td id="manufacturer">
+                                @part.manufacturer
+                            </td>
+                            <td id="vehicle">
+                                @part.vehicle
+                            </td>
+                            <td id="years">
+                                @part.years
+                            </td>
+                            <td id="price">
+                                @part.price
+                            </td>
+                            <td id="quantity">
+                                @part.quantity
+                            </td>
+                            <td id="threshold">
+                                @part.threshold
+                            </td>
+                        </tr>
+                        }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div style="display: inline-block">
+        <a class="btn btn-primary" role="button" asp-action="AddNewPart">Add Part</a>
+        <a class="btn btn-primary" role="button" asp-action="ReplenishStock">Replenish Stock</a>
+        <form method="get" action="~/Part/ChangePartDetails">
+            <div class="form-group">
+                <label for="partID">Part</label>
+                <select class="form-control" name="partID" id="partID">
+                    @foreach (Part part in parts)
+                    {
+                        <option>@part.partID</option>
+                    }
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Edit Part details</button>
+        </form>
+    </div>
+</body>
+</html>

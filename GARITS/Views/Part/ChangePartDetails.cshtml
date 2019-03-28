@@ -1,0 +1,64 @@
+﻿
+@{
+    ViewData["Title"] = "ChangePartDetails";
+}
+
+@using GARITS.Models
+@using GARITS.Providers
+@using System.Collections
+
+@model Part
+
+@{ 
+    var part = (Part)ViewData["Part"];
+}
+
+<!doctype html>
+<html lang="en">
+<body>
+    <h2>Change Part Details</h2>
+
+    <div>
+        <form action="~/Part/ChangePartDetails" method="post">
+            <div class="form-group">
+                <label for="partID">partID</label>
+                <input name="partID" type="text" class="form-control" id="partID" placeholder="Enter part ID" value="@part.partID" readonly>
+            </div>
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input name="name" type="text" class="form-control" id="name" placeholder="Enter part name" value="@part.name">
+            </div>
+            <div class="form-group">
+                <label for="manufacturer">Manufacturer</label>
+                <input name="manufacturer" type="text" class="form-control" id="manufacturer" placeholder="Enter manufacturer name" value="@part.manufacturer">
+            </div>
+            <div class="form-group">
+                <label for="vehicle">Vehicle</label>
+                <input name="vehicle" type="text" class="form-control" id="vehicle" placeholder="Enter applicable vehicle" value="@part.vehicle">
+            </div>
+            <div class="form-group">
+                <label for="years">Years</label>
+                <input name="years" type="text" class="form-control" id="years" placeholder="Enter applicable years" value="@part.years">
+            </div>
+            <div class="form-group">
+                <label for="price">Price</label>
+                <input name="price" type="number" class="form-control" id="price" placeholder="Enter price" value="@part.price">
+            </div>
+            <div class="form-group">
+                <label for="quantity">Quantity</label>
+                <input name="quantity" type="number" class="form-control" id="quantity" placeholder="Enter current quantity" value="@part.quantity">
+            </div>
+            <div class="form-group">
+                <label for="threshold">Threshold</label>
+                <input name="threshold" type="number" class="form-control" id="threshold" placeholder="Enter restock threshold" value="@part.threshold">
+            </div>
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
+        <div align="right">
+            <a class="btn btn-primary" role="button" asp-action="Parts">Back</a>
+        </div>
+    </div>
+
+
+</body>
+</html>
