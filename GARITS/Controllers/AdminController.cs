@@ -95,7 +95,17 @@ namespace GARITS.Controllers
         {
 
             ViewData["Car"] = VehicleProvider.getVehicleFromVRM(vrm);
-            ViewData["DVLACar"] = VehicleProvider.getDVLADetails(vrm);
+            
+            try
+            {
+                ViewData["DVLACar"] = VehicleProvider.getDVLADetails(vrm);
+            }
+            catch
+            {
+                ViewData["DVLACar"] = new DVLAData();
+            }
+
+            ViewData["vrm"] = vrm;
 
             return View();
 

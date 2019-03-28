@@ -12,8 +12,17 @@ namespace GARITS.Controllers
         public IActionResult AddVehicle(string vrm)
         {
 
-            ViewData["DVLADetails"] = VehicleProvider.getDVLADetails(vrm);
-            
+            try
+            {
+                ViewData["DVLADetails"] = VehicleProvider.getDVLADetails(vrm);
+            }
+            catch
+            {
+                ViewData["DVLADetails"] = new DVLAData();
+            }
+
+            ViewData["vrm"] = vrm;
+
             return View();
             
         }

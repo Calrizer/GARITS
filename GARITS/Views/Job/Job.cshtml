@@ -101,6 +101,30 @@
 
 <br>
 
+@{
+
+    if (job.status == "Complete - Awaiting Payment")
+    {
+         
+        int days = ((TimeSpan) (DateTime.Today - (DateTime) job.end)).Days;
+
+        if (days > 30)
+        {
+            
+            <div class="alert alert-warning" role="alert">
+                This job's payment is overdue by @days days. <a href="#" class="alert-link">Click here</a> to generate an invoice reminder.
+            </div>
+            
+            <br>
+            
+        }
+        
+    }  
+    
+}
+
+ 
+
 <div class="row">
 
     <div class="col-md-3">
@@ -363,7 +387,6 @@
 </div>
 
 @*=====MODALS=====*@
-
 
 <div class="modal fade" id="addNoteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">

@@ -31,17 +31,36 @@
     
     <div class="col-md-3">
 
-        <div class="card">
-            <div class="card-header">
-                DVLA Details
+        @if (dvla.vrm != null)
+        {
+            
+            <div class="card">
+                <div class="card-header">
+                    DVLA Details
+                </div>
+                <div class="card-body">
+                    <p><span class="registration-ui">@dvla.vrm</span></p>
+                    <p class="card-text">Details: @dvla.make @dvla.model @dvla.varient</p>
+                    <p class="card-text">Year: @dvla.year</p>
+                    <p class="card-text">Fuel: @dvla.fuel</p>
+                </div>
             </div>
-            <div class="card-body">
-                <p><span class="registration-ui">@dvla.vrm</span></p>
-                <p class="card-text">Details: @dvla.make @dvla.model @dvla.varient</p>
-                <p class="card-text">Year: @dvla.year</p>
-                <p class="card-text">Fuel: @dvla.fuel</p>
+            
+        }
+        else
+        {
+            
+            <div class="card text-center">
+                <div class="card-header">
+                    DVLA Details
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">No DVLA Data found for this vehicle.</h5>
+                    <p class="card-text">Verfiy registration and continue if needed.</p>
+                </div>
             </div>
-        </div>
+            
+        }
     
     </div>
     
@@ -68,7 +87,7 @@
 
                     <div class="form-group">
                         <label for="vrm">Registration Plate</label>
-                        <input type="text" class="form-control" id="vrm" name="vrm" value="@dvla.vrm">
+                        <input type="text" class="form-control" id="vrm" name="vrm" value="@ViewData["vrm"]">
                     </div>
 
                     <div class="form-group">
