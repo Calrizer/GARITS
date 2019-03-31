@@ -1,59 +1,65 @@
+@using System.Runtime.CompilerServices
 
 @{
 
-    var notes = (JobNote)ViewData["InvoiceNote"];
     var job = (Job)ViewData["JobDetails"];
+    var reminder = (int) ViewData["Reminder"];
     var partsTotal = 0.0;
     var labourTotal = 0.0;
     var discount = 0.0;
     var total = 0.0;
     var month = "";
 
-    switch (DateTime.Today.Month.ToString())
+    void getDateMonth(string data)
     {
+            
+        switch (data)
+        {
 
-        case "1":
-            month = "January";
-            break;
-        case "2":
-            month = "February";
-            break;
-        case "3":
-            month = "March";
-            break;
-        case "4":
-            month = "April";
-            break;
-        case "5":
-            month = "May";
-            break;
-        case "6":
-            month = "June";
-            break;
-        case "7":
-            month = "July";
-            break;
-        case "8":
-            month = "August";
-            break;
-        case "9":
-            month = "September";
-            break;
-        case "10":
-            month = "October";
-            break;
-        case "11":
-            month = "November";
-            break;
-        case "12":
-            month = "December";
-            break;
-        default:
-            month = "Error";
-            break;
+            case "1":
+                month = "January";
+                break;
+            case "2":
+                month = "February";
+                break;
+            case "3":
+                month = "March";
+                break;
+            case "4":
+                month = "April";
+                break;
+            case "5":
+                month = "May";
+                break;
+            case "6":
+                month = "June";
+                break;
+            case "7":
+                month = "July";
+                break;
+            case "8":
+                month = "August";
+                break;
+            case "9":
+                month = "September";
+                break;
+            case "10":
+                month = "October";
+                break;
+            case "11":
+                month = "November";
+                break;
+            case "12":
+                month = "December";
+                break;
+            default:
+                month = "Error";
+                break;
 
+        }
+            
     }
-
+    
 }
 
 <div class="invoice-box">
@@ -80,6 +86,9 @@
                             Kent<br>
                             CT16 8YY<br>
                             <br>
+                            @{
+                                getDateMonth(DateTime.Today.Month.ToString());
+                            }
                             @DateTime.Today.Day @month @DateTime.Today.Year
                         </td>
                     </tr>
@@ -90,17 +99,124 @@
 
     <div class="invoice-number">
 
-        <h5>INVOICE NO: @("J" + job.jobID)</h5>
+        @{
+
+            switch (reminder)
+            {
+                case 1:
+                    <h5>REMINDER - INVOICE NO: @("J" + job.jobID)</h5>
+                    break;
+                case 2:
+                    <h5>SECOND REMINDER - INVOICE NO: @("J" + job.jobID)</h5>
+                    break;
+                default:
+                    <h5>FINAL REMINDER - INVOICE NO: @("J" + job.jobID)</h5>
+                    break;
+            }
+
+        }   
 
     </div>
 
     <br>
     <br>
+    
+    @{
+        
+        foreach (KeyValuePair<Part, int> part in job.parts)
+        {
 
-    <p>
+            partsTotal = partsTotal + (part.Key.price * part.Value);
+                 
+        }
+        
+        
+        if (job.type == "MoT")
+        {
+         
+            partsTotal = partsTotal + 50.00;
+            
+        }
+        
+        labourTotal = job.mechanic.rate * job.labour["Labour Actual"];
+
+        total = labourTotal + partsTotal;
+        
+        if (job.discount.mot > 0 && job.type == "MoT")
+        {
+
+            discount = discount + (total / 100) * job.discount.mot;
+                
+        
+                
+        }else if (job.discount.other > 0)
+        {
+                
+            discount = discount + (total / 100) * job.discount.other;
+                    
+        }
+        
+        if (job.discount.credit > 0)
+        {
+                
+            discount = discount + job.discount.credit;
+             
+        } 
+        
+        
+    }
+
+    <h6>
         Vehicle Registration No: @job.vehicle.vrm<br>
-        Make: @job.vehicle.make<br>
-        Model: @job.vehicle.model<br>
+        Total Amount: £@(((total + (total / 100) * 20) - discount).ToString("#.##"))<br>   
+    </h6>
+    
+    <br>
+    
+    @{
+        
+        getDateMonth(job.end.Value.Month.ToString());
+        
+        switch (reminder)
+        {
+            case 1:
+                <p>
+                    According to our records, it appears that we have not yet received payment of the above invoice, which was posted to you on @job.end.Value.Day @month @job.end.Value.Year, for work done on the vehicle(s) listed above.<br>
+                    <br>
+                    We would appreciate payment at your earliest convenience.<br>
+                    <br>
+                    If you have already sent a payment to us recently, please accept our apologies.<br>
+                </p>
+                break;
+            case 2:
+                <p>
+                    It appears that we still have not yet received payment of the above invoice, which was posted to you on @job.end.Value.Day @month @job.end.Value.Year, for work done on the vehicle(s) listed above, despite a reminder letter posted to you 1 month later.<br>
+                    <br>
+                    We would appreciate it if you would settle this invoice in full by return.<br>
+                    <br>
+                    If you have already sent a payment to us recently, please accept our apologies.<br>
+                </p>
+                break;
+            default:
+                <p>
+                    Despite two reminders, it appears that we still have not yet received payment of the above invoice, which was posted to you on @job.end.Value.Day @month @job.end.Value.Year, for work done on the vehicle(s) listed above.<br>
+                    <br>
+                    Unless you pay the outstanding amount in full within SEVEN DAYS, or contact us with proposals for repayment, we will have no option but to refer the matter to our solicitor.<br>
+                    <br>
+                    Please send payment immediately to avoid further action.<br>
+                </p>
+                break;
+            
+        }
+    
+    }
+    
+    <br>
+    <p>
+        Yours sincerely,
+    </p>
+    <p>
+        G. Lancaster
     </p>
 
 </div>

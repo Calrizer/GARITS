@@ -84,6 +84,21 @@ namespace GARITS.Providers
                     con.Close();
 
                 }
+                
+                query = "UPDATE Parts SET stockQuantity = stockQuantity-1 WHERE partID = @partID";
+                using (MySqlCommand cmd = new MySqlCommand(query))
+                {
+
+                    cmd.Parameters.AddWithValue("@partID", partID);
+                    
+                    cmd.Connection = con;
+                    con.Open();
+
+                    cmd.ExecuteNonQuery();
+
+                    con.Close();
+
+                }
 
             }
             

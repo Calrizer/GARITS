@@ -94,6 +94,8 @@ namespace GARITS.Controllers
         public IActionResult Car(string vrm)
         {
 
+            vrm = vrm.Replace(" ", "");
+
             ViewData["Car"] = VehicleProvider.getVehicleFromVRM(vrm);
             
             try
@@ -110,16 +112,6 @@ namespace GARITS.Controllers
             return View();
 
         }
-
-
-        public IActionResult Contact()
-        {
-            ViewData["Message"] = "Your contact page.";
-
-            return View();
-
-        }
-
 
         private bool isAuthenticated()
         {

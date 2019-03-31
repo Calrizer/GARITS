@@ -9,6 +9,7 @@ using GARITS.Models;
 using System.Data;
 using System.Configuration;
 using System.Security.Cryptography;
+using System.Security.Policy;
 using System.Text;
 using MySql.Data.MySqlClient;
 using GARITS.Providers;
@@ -83,6 +84,67 @@ namespace GARITS.Providers
 
             return job;
 
+        }
+
+        public static List<Job> getAllJobs(string filter, DateTime start, DateTime end)
+        {
+            
+            List<Job> jobs = new List<Job>();
+
+            using (MySqlConnection con = new MySqlConnection(connection))
+            {
+
+                string query = "";
+                
+                switch (filter)
+                {
+                    
+                    case "ALL":
+                        query = "SELECT jobID FROM Jobs WHERE startDate BETWEEN @start AND @end";
+                        break;
+                    case "COMPLETE":
+                        query = "SELECT jobID FROM Jobs WHERE status LIKE 'Complete%' AND startDate BETWEEN @start AND @end";
+                        break;
+                    case "PAID":
+                        query = "SELECT jobID FROM Jobs WHERE status = 'Complete - Paid' AND startDate BETWEEN @start AND @end";
+                        break;
+                    case "UNPAID":
+                        query = "SELECT jobID FROM Jobs WHERE status = 'Complete - Awaiting Payment' AND startDate BETWEEN @start AND @end";
+                        break;
+                    case "ONGOING":
+                        query = "SELECT jobID FROM Jobs WHERE status = 'Ongoing' AND startDate BETWEEN @start AND @end";
+                        break;
+                    
+                }
+                
+                using (MySqlCommand cmd = new MySqlCommand(query))
+                {
+                    cmd.Parameters.AddWithValue("@start", start);
+                    cmd.Parameters.AddWithValue("@end", end);
+                    
+                    Console.Out.WriteLine(cmd.CommandText);
+                    
+                    cmd.Connection = con;
+                    con.Open();
+                    using (MySqlDataReader sdr = cmd.ExecuteReader())
+                    {
+                        while (sdr.Read())
+                        {
+
+                            jobs.Add(getJobDetails(sdr["jobID"].ToString()));
+                            
+                        }
+
+                    }
+
+                    con.Close();
+
+                }
+
+            }
+
+            return jobs;  
+            
         }
 
         public static void createJob(Job job)
@@ -449,6 +511,52 @@ namespace GARITS.Providers
 
             }
 
+        }
+        
+        public static void updateStatus(string jobID, string status)
+        {
+            using (MySqlConnection con = new MySqlConnection(connection))
+            {
+
+                string query = "";
+                
+                if (status == "Complete - Awaiting Payment")
+                {
+                    
+                    query = "UPDATE Jobs SET status = @status, endDate = @date WHERE jobID = @jobID";
+                    
+                }else if (status == "Complete - Paid")
+                {
+                    
+                    query = "UPDATE Jobs SET status = @status, paidDate = @date WHERE jobID = @jobID";
+                    
+                }
+                else
+                {
+                    
+                    query = "UPDATE Jobs SET status = @status WHERE jobID = @jobID";
+                    
+                }
+                
+                 
+                using (MySqlCommand cmd = new MySqlCommand(query))
+                {
+                    cmd.Parameters.AddWithValue("@jobID", jobID);
+                    cmd.Parameters.AddWithValue("@status", status);
+
+                    if (status == "Complete - Awaiting Payment" || status == "Complete - Paid") cmd.Parameters.AddWithValue("@date", DateTime.Now);
+                    
+                    cmd.Connection = con;
+                    con.Open();
+
+                    cmd.ExecuteNonQuery();
+
+                    con.Close();
+                    
+                }
+                
+            }
+            
         }
 
         public static void addJobNote(JobNote note, string jobID)

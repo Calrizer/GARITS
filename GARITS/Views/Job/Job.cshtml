@@ -1,5 +1,4 @@
-﻿@using GARITS.Models
-
+﻿
 @{
 
     var job = (Job)ViewData["JobDetails"];
@@ -10,6 +9,7 @@
     var labourAdded = false;
     var invoiceNoteAdded = false;
     var isFinished = false;
+    var isPaid = false;
 
     ViewData["Title"] = "Job View: J" + job.jobID;
 
@@ -32,6 +32,13 @@
     {
 
         isFinished = true;
+
+    }
+
+    if (job.status == "Complete - Paid")
+    {
+
+        isPaid = true;
 
     }
 
@@ -66,8 +73,14 @@
                     }
 
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addNoteModal" style="margin-right: 4px" href="#" role="button">Add Note</button>
-                    <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#addPartModal" style="margin-right: 4px" href="#" role="button">Add Part</button>
                     
+                    @if (!isFinished)
+                    {
+                        
+                        <button type="submit" class="btn btn-primary" data-toggle="modal" data-target="#addPartModal" style="margin-right: 4px" href="#" role="button">Add Part</button>
+                        
+                    }
+                     
                     <form action="~/Job/JobSheet" method="post" style="display: inline-block">
                         <input type="hidden" id="jobID" name="jobID" value="@job.jobID">
                         <button type="submit" class="btn btn-primary" href="" role="button">Job Sheet</button>
@@ -80,6 +93,16 @@
                             <input type="hidden" id="jobID" name="jobID" value="@job.jobID">
                             <button type="submit" class="btn btn-primary" href="" role="button">Invoice</button>
                         </form>
+
+                        if (!isPaid)
+                        {
+                            
+                            <form action="~/Job/Pay" method="post" style="display: inline-block">
+                                <input type="hidden" id="jobID" name="jobID" value="@job.jobID">
+                                <button type="submit" class="btn btn-primary" href="" role="button">Take Payment</button>
+                            </form>
+                            
+                        }
 
                     }
                     else
@@ -108,281 +131,303 @@
          
         int days = ((TimeSpan) (DateTime.Today - (DateTime) job.end)).Days;
 
-        if (days > 30)
+        if (days > 30 & days < 60)
         {
             
             <div class="alert alert-warning" role="alert">
-                This job's payment is overdue by @days days. <a href="#" class="alert-link">Click here</a> to generate an invoice reminder.
+                This job's payment is overdue by @days days. <a href="~/Job/Reminder?jobID=@job.jobID&reminder=1" class="alert-link">Click here</a> to generate an invoice reminder.
             </div>
             
-            <br>
+            
+            
+        }else if (days > 60 & days < 90)
+        {
+            
+            <div class="alert alert-warning" role="alert">
+                This job's payment is overdue by @days days. <a href="~/Job/Reminder?jobID=@job.jobID&reminder=2" class="alert-link">Click here</a> to generate an invoice reminder.
+            </div>
+            
+        }else if (days > 90)
+        {
+            
+            <div class="alert alert-danger" role="alert">
+                This job's payment is overdue by @days days. <a href="~/Job/Reminder?jobID=@job.jobID&reminder=3" class="alert-link">Click here</a> to generate an invoice reminder.
+            </div>
             
         }
+        
+        <br>
         
     }  
     
 }
 
- 
-
 <div class="row">
 
-    <div class="col-md-3">
-        <div class="card">
-            <h5 class="card-header">Details</h5>
-            <div class="card-body">
-                <p class="card-text">Job ID: @("J" + job.jobID)</p>
-                <p class="card-text">Type: @job.type</p>
-                <p class="card-text">Status: @job.status</p>
-                <p class="card-text">Started: @job.start</p>
-                <p class="card-text">Mechanic: @job.mechanic.firstname @job.mechanic.lastname</p>
-                <p class="card-text">Bay: @job.bay</p>
-            </div>
+<div class="col-md-3">
+    <div class="card">
+        <h5 class="card-header">Details</h5>
+        <div class="card-body">
+            <p class="card-text">Job ID: @("J" + job.jobID)</p>
+            <p class="card-text">Type: @job.type</p>
+            <p class="card-text">Status: @job.status</p>
+            <p class="card-text">Started: @job.start.ToShortDateString()</p>
+            @if (job.end != null)
+            {
+                <p class="card-text">Completed: @job.end.Value.ToShortDateString()</p>  
+            }
+            @if (job.paid != null)
+            {
+                <p class="card-text">Paid: @job.paid.Value.ToShortDateString()</p>  
+            }
+             <p class="card-text">Mechanic: @job.mechanic.firstname @job.mechanic.lastname</p>
+            <p class="card-text">Bay: @job.bay</p>
         </div>
-        <br>
-        <div class="card">
-            <h5 class="card-header">Customer</h5>
-            <div class="card-body">
-                <p class="card-text">@job.customer.firstname @job.customer.lastname</p>
-                <p class="card-text">@job.customer.phone</p>
-                <p class="card-text">@job.customer.email</p>
-            </div>
+    </div>
+    <br>
+    <div class="card">
+        <h5 class="card-header">Customer</h5>
+        <div class="card-body">
+            <p class="card-text">@job.customer.firstname @job.customer.lastname</p>
+            <p class="card-text">@job.customer.phone</p>
+            <p class="card-text">@job.customer.email</p>
         </div>
-        <br>
-        <div class="card">
-            <h5 class="card-header">Vehicle</h5>
-            <div class="card-body">
-                <p><span class="registration-ui">@job.vehicle.vrm</span></p>
-                <p class="card-text">Details: @job.vehicle.make @job.vehicle.model</p>
-                <p class="card-text">Year: @job.vehicle.year</p>
-                <p class="card-text">Colour: @job.vehicle.colour</p>
-            </div>
+    </div>
+    <br>
+    <div class="card">
+        <h5 class="card-header">Vehicle</h5>
+        <div class="card-body">
+            <p><span class="registration-ui">@job.vehicle.vrm</span></p>
+            <p class="card-text">Details: @job.vehicle.make @job.vehicle.model</p>
+            <p class="card-text">Year: @job.vehicle.year</p>
+            <p class="card-text">Colour: @job.vehicle.colour</p>
         </div>
-        <br>
-        <div class="card">
-            <h5 class="card-header">Previous Jobs</h5>
-            <ul class="list-group">
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    J3267311
-                    21/01/2019
-                </li>
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    J2853109
-                    21/01/2019
-                </li>
-            </ul>
-        </div>
-
+    </div>
+    <br>
+    <div class="card">
+        <h5 class="card-header">Previous Jobs</h5>
+        <ul class="list-group">
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                J3267311
+                21/01/2019
+            </li>
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                J2853109
+                21/01/2019
+            </li>
+        </ul>
     </div>
 
-    <div class="col-md-5">
-        <div class="card">
-            <h5 class="card-header">Job Notes</h5>
-            <div class="card-body">
+</div>
 
-                @foreach (JobNote note in job.notes)
-                {
+<div class="col-md-5">
+    <div class="card">
+        <h5 class="card-header">Job Notes</h5>
+        <div class="card-body">
 
-                    <div class="card">
-                        <div class="card-header">
-                            @note.type
-                        </div>
-                        <div class="card-body">
-                            <p class="card-text">@note.body</p>
-                            <p class="card-text text-muted">@note.user.firstname @note.user.lastname - @note.time</p>
-                        </div>
+            @foreach (JobNote note in job.notes)
+            {
+
+                <div class="card">
+                    <div class="card-header">
+                        @note.type
                     </div>
-                    <br>
+                    <div class="card-body">
+                        <p class="card-text">@note.body</p>
+                        <p class="card-text text-muted">@note.user.firstname @note.user.lastname - @note.time</p>
+                    </div>
+                </div>
+                <br>
 
-                }
-
-            </div>
+            }
 
         </div>
 
     </div>
 
-    <div class="col-md-4">
+</div>
 
-        <div class="card">
+<div class="col-md-4">
 
-            <h5 class="card-header">Parts</h5>
+    <div class="card">
 
-            <div class="card-body">
+        <h5 class="card-header">Parts</h5>
 
-                @foreach (KeyValuePair<Part, int> part in job.parts)
-                {
+        <div class="card-body">
+
+            @foreach (KeyValuePair<Part, int> part in job.parts)
+            {
                     
-                    <div class="card">
+                <div class="card">
 
-                        <div class="card-body">
+                    <div class="card-body">
 
-                            <p class="card-text">@part.Key.manufacturer: @part.Key.name</p>
-                            <p class="card-text">@part.Key.partID</p>
-                            <p class="card-text">£@part.Key.price</p>
-                            <p class="card-text">Quantity: @part.Value</p>
+                        <p class="card-text">@part.Key.manufacturer: @part.Key.name</p>
+                        <p class="card-text">@part.Key.partID</p>
+                        <p class="card-text">£@part.Key.price</p>
+                        <p class="card-text">Quantity: @part.Value</p>
 
-                            @{
-                                String[] years = part.Key.years.Split("-");
-                            }
+                        @{
+                            String[] years = part.Key.years.Split("-");
+                        }
                             
-                            @if (part.Key.manufacturer != job.vehicle.make || part.Key.vehicle != job.vehicle.model || !years.Contains(job.vehicle.year))
-                            {
+                        @if (part.Key.manufacturer != job.vehicle.make || part.Key.vehicle != job.vehicle.model || !years.Contains(job.vehicle.year))
+                        {
                          
                             <div class="alert alert-warning" role="alert">
                                 Info: From this part's information, it could be incompatible with this job's vehicle. Please ensure that the part is compatible before proceeding with the job.
                             </div>
                          
-                            }
+                        }
                             
-                            @{
-                                partsTotal = partsTotal + (part.Key.price * part.Value);
-                            }
-
-                        </div>
+                        @{
+                            partsTotal = partsTotal + (part.Key.price * part.Value);
+                        }
 
                     </div>
-                    <br>
-
-                }
-
-            </div>
-            <div class="card-footer">
-                Parts Total: £@partsTotal.ToString("#.##")
-            </div>
-
-        </div>
-
-        <br>
-
-        @if (job.type == "MoT")
-        {
-
-            <div class="card">
-
-                <div class="card-header">
-
-                    MoT Flat Rate: £50.00
 
                 </div>
-
-                @{
-                    partsTotal = partsTotal + 50;
-                }
-
-            </div>
-
-            <br>
-
-        }
-
-        <div class="card">
-
-            <h5 class="card-header">Labour</h5>
-
-            <ul class="list-group">
-
-                @foreach (KeyValuePair<string, float> labour in job.labour)
-                {
-
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        @labour.Key: @labour.Value hours.
-                    </li>
-
-                }
-
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    Rate: £@job.mechanic.rate / hour.
-                </li>
-
-            </ul>
-
-            @if (!labourAdded)
-            {
-
-                labourTotal = job.labour["Labour Estimate"] * job.mechanic.rate;
-
-                <div class="card-footer">
-                    Estimated Labour Total: £@labourTotal.ToString("#.##")
-                </div>
-
-            }
-            else
-            {
-
-                labourTotal = job.labour["Labour Actual"] * job.mechanic.rate;
-
-                <div class="card-footer">
-                    Labour Total: £@labourTotal.ToString("#.##")
-                </div>
+                <br>
 
             }
 
         </div>
-        
-        <br>
-        
-        @{
-
-            total = partsTotal + labourTotal;
-
-        }
-        
-            
-        @if (job.discount.mot > 0 && job.type == "MoT")
-            {
-
-                discount = discount + (total / 100) * job.discount.mot;
-                
-                <div class="card">
-                    <div class="card-header">
-                        MoT Discount: £@(((total / 100) * job.discount.mot).ToString("#.##"))
-                    </div>
-                </div>
-                <br>
-                
-            }else if (job.discount.other > 0)
-            {
-                
-                discount = discount + (total / 100) * job.discount.other;
-                
-                <div class="card">
-                    <div class="card-header">
-                        Discount: £@(((total / 100) * job.discount.other).ToString("#.##"))
-                    </div>
-                </div>
-                <br>
-                    
-            }
-        
-        @if (job.discount.credit > 0)
-            {
-                
-                discount = discount + job.discount.credit;
-                
-                <div class="card">
-                    <div class="card-header">
-                        Discount Credit: £@(job.discount.credit).ToString("#.##"))
-                    </div>
-                </div>
-                <br>
-                
-         }        
-
-        <div class="card">
-
-            <div class="card-body">
-                <p class="card-text">VAT: £@(((total / 100) * 20).ToString("#.##")) </p>
-            </div>
-
-
-            <div class="card-footer">
-                Total inc VAT and Discounts: £@(((total + (total / 100) * 20) - discount).ToString("#.##"))
-            </div>
-
+        <div class="card-footer">
+            Parts Total: £@partsTotal.ToString("#.##")
         </div>
 
     </div>
+
+    <br>
+
+    @if (job.type == "MoT")
+    {
+
+        <div class="card">
+
+            <div class="card-header">
+
+                MoT Flat Rate: £50.00
+
+            </div>
+
+            @{
+                partsTotal = partsTotal + 50;
+            }
+
+        </div>
+
+        <br>
+
+    }
+
+    <div class="card">
+
+        <h5 class="card-header">Labour</h5>
+
+        <ul class="list-group">
+
+            @foreach (KeyValuePair<string, float> labour in job.labour)
+            {
+
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    @labour.Key: @labour.Value hours.
+                </li>
+
+            }
+
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                Rate: £@job.mechanic.rate / hour.
+            </li>
+
+        </ul>
+
+        @if (!labourAdded)
+        {
+
+            labourTotal = job.labour["Labour Estimate"] * job.mechanic.rate;
+
+            <div class="card-footer">
+                Estimated Labour Total: £@labourTotal.ToString("#.##")
+            </div>
+
+        }
+        else
+        {
+
+            labourTotal = job.labour["Labour Actual"] * job.mechanic.rate;
+
+            <div class="card-footer">
+                Labour Total: £@labourTotal.ToString("#.##")
+            </div>
+
+        }
+
+    </div>
+        
+    <br>
+        
+    @{
+
+        total = partsTotal + labourTotal;
+
+    }
+        
+            
+    @if (job.discount.mot > 0 && job.type == "MoT")
+    {
+
+        discount = discount + (total / 100) * job.discount.mot;
+                
+        <div class="card">
+            <div class="card-header">
+                MoT Discount: £@(((total / 100) * job.discount.mot).ToString("#.##"))
+            </div>
+        </div>
+        <br>
+                
+    }else if (job.discount.other > 0)
+    {
+                
+        discount = discount + (total / 100) * job.discount.other;
+                
+        <div class="card">
+            <div class="card-header">
+                Discount: £@(((total / 100) * job.discount.other).ToString("#.##"))
+            </div>
+        </div>
+        <br>
+                    
+    }
+        
+    @if (job.discount.credit > 0)
+    {
+                
+        discount = discount + job.discount.credit;
+                
+        <div class="card">
+            <div class="card-header">
+                Discount Credit: £@(job.discount.credit).ToString("#.##"))
+            </div>
+        </div>
+        <br>
+                
+    }        
+
+    <div class="card">
+
+        <div class="card-body">
+            <p class="card-text">VAT: £@(((total / 100) * 20).ToString("#.##")) </p>
+        </div>
+
+
+        <div class="card-footer">
+            Total inc VAT and Discounts: £@(((total + (total / 100) * 20) - discount).ToString("#.##"))
+        </div>
+
+    </div>
+
+</div>
 
 </div>
 
@@ -507,16 +552,16 @@
 <script>
 
     $('#addNoteModal').on('shown.bs.modal', function () {
-  $('#btn').trigger('focus')
-})
+        $('#btn').trigger('focus')
+    })
 
     $('#addInvoiceNoteModal').on('shown.bs.modal', function () {
-  $('#btn').trigger('focus')
-})
+        $('#btn').trigger('focus')
+    })
 
-        $('#addLabourModal').on('shown.bs.modal', function () {
-  $('#btn').trigger('focus')
-})
+    $('#addLabourModal').on('shown.bs.modal', function () {
+        $('#btn').trigger('focus')
+    })
     
     $('#addPartModal').on('shown.bs.modal', function () {
         $('#btn').trigger('focus')

@@ -27,6 +27,15 @@ namespace GARITS.Controllers
 
         }
 
+        public IActionResult ViewJobs()
+        {
+
+            ViewData["Jobs"] = JobProvider.getAllJobs("COMPLETE", new DateTime(2018, 11, 01), DateTime.Today);
+            
+            return View("View");
+
+        }
+
         public IActionResult Book()
         {
 
@@ -72,7 +81,7 @@ namespace GARITS.Controllers
                 end = null,
                 paid = null,
                 bay = Int32.Parse(bay),
-                status = "Ready For Repair",
+                status = "Ongoing",
                 type = type,
                 customer = CustomerProvider.getCustomerFromID(customerID),
                 vehicle = VehicleProvider.getVehicleFromVRM(vrm),
@@ -117,6 +126,16 @@ namespace GARITS.Controllers
             return View("Invoice");
 
         }
+        
+        public IActionResult Reminder(string jobID, string reminder)
+        {
+
+            ViewData["JobDetails"] = JobProvider.getJobDetails(jobID);
+            ViewData["Reminder"] = Int32.Parse(reminder);
+            
+            return View("Reminder");
+
+        }
 
         [HttpPost]
         public IActionResult JobSheet(string jobID)
@@ -146,12 +165,38 @@ namespace GARITS.Controllers
 
             JobProvider.addJobNote(note, jobID);
 
-            TempData["JobID"] = jobID;
+            if (type == "Invoice")
+            {
+                JobProvider.updateStatus(jobID, "Complete - Awaiting Payment");
+            }
 
             return RedirectToAction("ViewJob", "Job", new { id = jobID });
 
         }
 
+        [HttpPost]
+        public IActionResult Pay(string jobID)
+        {
+            
+            JobProvider.updateStatus(jobID, "Complete - Paid");
+            
+            JobNote note = new JobNote
+            {
+
+                id = JobProvider.GetUniqueKey(255),
+                type = "Payment",
+                body = "Customer payment taken.",
+                time = DateTime.Now,
+                user = UserProvider.getUserFromUsername(HttpContext.Session.GetString("user"))
+
+            };
+            
+            JobProvider.addJobNote(note, jobID);
+            
+            return RedirectToAction("ViewJob", "Job", new { id = jobID });
+            
+        }
+        
         [HttpPost]
         public IActionResult AddPart(string jobID, string search)
         {

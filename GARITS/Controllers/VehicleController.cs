@@ -12,6 +12,8 @@ namespace GARITS.Controllers
         public IActionResult AddVehicle(string vrm)
         {
 
+            vrm = vrm.Replace(" ", "");
+
             try
             {
                 ViewData["DVLADetails"] = VehicleProvider.getDVLADetails(vrm);
@@ -47,7 +49,6 @@ namespace GARITS.Controllers
             VehicleProvider.addVehicle(vehicle);
 
             return RedirectToAction("AddWithVehicle", "Customer", new {vrm = vrm});
-
 
         }
         
