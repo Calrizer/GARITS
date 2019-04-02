@@ -207,7 +207,7 @@ namespace GARITS.Providers
         {
             using (MySqlConnection con = new MySqlConnection(connection))
             {
-                string query = "UPDATE Parts SET stockquantity = stockquantity + @quantity WHERE partID = @partID";
+                string query = "UPDATE Parts SET stockquantity = (stockquantity + @quantity) WHERE partID = @partID";
                 using (MySqlCommand cmd = new MySqlCommand(query))
                 {
                     cmd.Parameters.AddWithValue("@partID", partID);
@@ -257,7 +257,7 @@ namespace GARITS.Providers
 
             using (MySqlConnection con = new MySqlConnection(connection))
             {
-                string query = "SELECT * FROM Parts WHERE stockquantity < threshold";
+                string query = "SELECT * FROM Parts WHERE stockquantity <= threshold";
                 using (MySqlCommand cmd = new MySqlCommand(query))
                 {
                     cmd.Connection = con;

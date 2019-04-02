@@ -30,14 +30,15 @@
         {
 
 
+            
+        <form action="~/Part/ReplenishStock" method="post">
             <div style="display: inline-block">
-                <form action="~/Part/ReplenishStock">
-                    <label for="name">@part.name</label>
-                    <input type="hidden" name="partID" readonly value="@part.partID">
-                    <input name="quantity" type="number" placeholder="Number bought">
-                    <button type="submit" class="btn btn-primary">Add to stock</button>
-                </form>
+                <label for="name">@part.name</label>
+                <input type="hidden" name="partID" readonly value="@part.partID">
+                <input name="quantity" type="number" placeholder="Number bought">
+                <button type="submit" class="btn btn-primary">Add to stock</button>
             </div>
+        </form>
         }
     }
 
