@@ -1,0 +1,110 @@
+
+
+@{
+
+    var customer = (Customer)ViewData["Customer"];
+    var jobs = (List<Job>) ViewData["Jobs"];
+    
+}
+
+<div class="row">
+
+
+    <div class="col-md-12">
+
+        <div class="card">
+
+            <div class="card-header" style="display: inline-block">
+
+                <div style="display: inline-block; margin-top: 8px">
+                    <h5>View Customer Jobs</h5>
+                </div>
+                
+                <div class="float-right" style="display: inline-block">
+                    
+                    <a class="btn btn-primary" href="~/Vehicle/AddVehicle" role="button">New Job</a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    
+
+</div>
+
+<br>
+
+<div class="row">
+    
+    <div class="col-md-3">
+        
+        <div class="card">
+            
+            <h5 class="card-header">Customer</h5>
+            <div class="card-body">
+                
+                <p class="card-text">@customer.firstname @customer.lastname</p>
+                <p class="card-text">@customer.phone</p>
+                <p class="card-text">@customer.email</p>
+                
+            </div>
+            
+        </div>
+        
+    </div>
+
+    <div class="col-md-9 parts-list">
+        
+        <p>@jobs.Count jobs found.</p>
+        
+        <hr>
+        
+        @foreach (Job job in jobs)
+        {
+            
+            <h5>@("J" + job.jobID)</h5>
+            <p>@job.status</p>
+            <p style="padding: 10px 10px 10px 0"><span class="registration-ui">@job.vehicle.vrm</span></p>
+            if (job.status == "Ongoing")
+             {
+                 <p>Started: @job.start.ToString("dd/MM/yyyy")</p>
+             }
+            else
+            {
+                <p>Started: @job.start.ToString("dd/MM/yyyy") - Finished: @job.end.Value.ToString("dd/MM/yyyy")</p>
+            }            
+            <div style="display: inline-block; margin-top: 10px">
+                <a class="btn btn-primary" style="margin-right: 5px" href="~/Job/ViewJob?id=@job.jobID" role="button">View Job</a>  
+                
+                @if (job.status.Contains("Complete"))
+                {
+                    
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Actions
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="~/Job/JobSheet?jobID=@job.jobID">Job Sheet</a>
+                            <a class="dropdown-item" href="~/Job/Invoice?jobID=@job.jobID">Invoice</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="~/Job/Reminder?jobID=@job.jobID&reminder=1">First Reminder</a>
+                            <a class="dropdown-item" href="~/Job/Reminder?jobID=@job.jobID&reminder=2">Second Reminder</a>
+                            <a class="dropdown-item" href="~/Job/Reminder?jobID=@job.jobID&reminder=3">Final Reminder</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="~/Job/BookAddVehicle?vrm=@job.vehicle.vrm">Create New Job</a>
+                        </div>
+                    </div>
+                    
+                }
+                
+            </div>
+            <hr>
+
+        }
+
+    </div>
+
+</div>

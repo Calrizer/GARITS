@@ -1,4 +1,3 @@
-@using System.Runtime.CompilerServices
 
 @{
 
@@ -8,57 +7,6 @@
     var labourTotal = 0.0;
     var discount = 0.0;
     var total = 0.0;
-    var month = "";
-
-    void getDateMonth(string data)
-    {
-            
-        switch (data)
-        {
-
-            case "1":
-                month = "January";
-                break;
-            case "2":
-                month = "February";
-                break;
-            case "3":
-                month = "March";
-                break;
-            case "4":
-                month = "April";
-                break;
-            case "5":
-                month = "May";
-                break;
-            case "6":
-                month = "June";
-                break;
-            case "7":
-                month = "July";
-                break;
-            case "8":
-                month = "August";
-                break;
-            case "9":
-                month = "September";
-                break;
-            case "10":
-                month = "October";
-                break;
-            case "11":
-                month = "November";
-                break;
-            case "12":
-                month = "December";
-                break;
-            default:
-                month = "Error";
-                break;
-
-        }
-            
-    }
     
 }
 
@@ -86,10 +34,7 @@
                             Kent<br>
                             CT16 8YY<br>
                             <br>
-                            @{
-                                getDateMonth(DateTime.Today.Month.ToString());
-                            }
-                            @DateTime.Today.Day @month @DateTime.Today.Year
+                            @DateTime.Today.ToString("d MMMM yyyy")
                         </td>
                     </tr>
                 </table>
@@ -175,13 +120,11 @@
     
     @{
         
-        getDateMonth(job.end.Value.Month.ToString());
-        
         switch (reminder)
         {
             case 1:
                 <p>
-                    According to our records, it appears that we have not yet received payment of the above invoice, which was posted to you on @job.end.Value.Day @month @job.end.Value.Year, for work done on the vehicle(s) listed above.<br>
+                    According to our records, it appears that we have not yet received payment of the above invoice, which was posted to you on @job.end.Value.ToString("d MMMM yyyy"), for work done on the vehicle(s) listed above.<br>
                     <br>
                     We would appreciate payment at your earliest convenience.<br>
                     <br>
@@ -190,7 +133,7 @@
                 break;
             case 2:
                 <p>
-                    It appears that we still have not yet received payment of the above invoice, which was posted to you on @job.end.Value.Day @month @job.end.Value.Year, for work done on the vehicle(s) listed above, despite a reminder letter posted to you 1 month later.<br>
+                    It appears that we still have not yet received payment of the above invoice, which was posted to you on @job.end.Value.ToString("d MMMM yyyy"), for work done on the vehicle(s) listed above, despite a reminder letter posted to you 1 month later.<br>
                     <br>
                     We would appreciate it if you would settle this invoice in full by return.<br>
                     <br>
@@ -199,7 +142,7 @@
                 break;
             default:
                 <p>
-                    Despite two reminders, it appears that we still have not yet received payment of the above invoice, which was posted to you on @job.end.Value.Day @month @job.end.Value.Year, for work done on the vehicle(s) listed above.<br>
+                    Despite two reminders, it appears that we still have not yet received payment of the above invoice, which was posted to you on @job.end.Value.ToString("d MMMM yyyy"), for work done on the vehicle(s) listed above.<br>
                     <br>
                     Unless you pay the outstanding amount in full within SEVEN DAYS, or contact us with proposals for repayment, we will have no option but to refer the matter to our solicitor.<br>
                     <br>

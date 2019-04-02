@@ -15,9 +15,9 @@
         }
 
         html, body {
-            background: #485563; /* fallback for old browsers */
-            background: -webkit-linear-gradient(to right, #29323c, #485563); /* Chrome 10-25, Safari 5.1-6 */
-            background: linear-gradient(to right, #29323c, #485563); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+            background: #0F2027 repeat fixed top left;  /* fallback for old browsers */
+            background: linear-gradient(to right, #355c7d, #6c5b7b, #c06c84) no-repeat fixed top left;
+
         }
 
         .title {
@@ -60,12 +60,15 @@
 </head>
 
 <body>
+
+<div class="background">
+
     <div class="main">
 
 
         <h2 class="title">GARITS</h2>
 
-        @if ((bool)ViewData["LoginError"] == true)
+        @if ((bool) ViewData["LoginError"] == true)
         {
             <div class="alert alert-danger" role="alert">
                 Your username or password is incorrect.
@@ -91,18 +94,20 @@
         </form>
     </div>
 
+</div>
 
-    <script>
-        $(document).ready(function(){
-            $('[data-toggle="popover"]').popover();
-            $('[data-toggle="popover"]').popover({
-                container: 'body'
-            });
-            $('.popover-dismiss').popover({
-                trigger: 'focus'
-            })
+
+<script>
+    $(document).ready(function() {
+        $('[data-toggle="popover"]').popover();
+        $('[data-toggle="popover"]').popover({
+            container: 'body'
         });
-    </script>
+        $('.popover-dismiss').popover({
+            trigger: 'focus'
+        })
+    });
+</script>
 
 </body>
 

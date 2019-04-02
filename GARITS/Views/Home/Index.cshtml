@@ -21,8 +21,8 @@
                 <p class="lead">What would you like to do today?</p>
                 <div style="display: inline-block">
                     <a class="btn btn-primary" href="~/Job/Book" role="button">Add New Job</a>
-                    <a class="btn btn-primary" href="#" role="button">Take Payment</a>
-                    <a class="btn btn-primary" href="~/Job/ViewJobs" role="button">View All Jobs</a>
+                    <a class="btn btn-primary" href="~/Job/ViewJobs?filter=UNPAID&start=@DateTime.Today.Add(new TimeSpan(-30, 0, 0, 0)).ToString("dd/MM/yyyy")&end=@DateTime.Today.ToString("dd/MM/yyyy")" role="button">Take Payment</a>
+                    <a class="btn btn-primary" href="~/Job/ViewJobs?filter=ONGOING&start=@DateTime.Today.Add(new TimeSpan(-30, 0, 0, 0)).ToString("dd/MM/yyyy")&end=@DateTime.Today.ToString("dd/MM/yyyy")" role="button">View All Jobs</a>
                 </div>
             </div>
         </div>

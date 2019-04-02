@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using System.Net;
 using System.IO;
@@ -72,6 +73,94 @@ namespace GARITS.Providers
         }
 
 
+        public static List<Vehicle> getAllVehicles()
+        {
+
+            List<Vehicle> vehicles = new List<Vehicle>();
+
+            using (MySqlConnection con = new MySqlConnection(connection))
+            {
+                string query = "SELECT * FROM Vehicles";
+                using (MySqlCommand cmd = new MySqlCommand(query))
+                {
+                    cmd.Connection = con;
+                    con.Open();
+                    using (MySqlDataReader sdr = cmd.ExecuteReader())
+                    {
+                        while (sdr.Read())
+                        {
+
+                            vehicles.Add(new Vehicle
+                            {
+
+                                vrm = (sdr["vrm"]).ToString(),
+                                make = sdr["make"].ToString(),
+                                model = sdr["model"].ToString(),
+                                year = sdr["year"].ToString(),
+                                engine = sdr["serial"].ToString(),
+                                chassis = sdr["chassis"].ToString(),
+                                colour = sdr["colour"].ToString()
+
+                            });
+
+                        }
+
+                    }
+
+                    con.Close();
+
+                }
+
+            }
+
+            return vehicles;
+
+        }
+        
+        public static List<Vehicle> searchVehicles(string search)
+        {
+
+            List<Vehicle> vehicles = new List<Vehicle>();
+
+            using (MySqlConnection con = new MySqlConnection(connection))
+            {
+                string query = "SELECT * FROM Vehicles WHERE vrm LIKE '%" + search + "%' OR make LIKE '%" + search + "%' OR model LIKE '%" + search + "%' OR year LIKE '%" + search + "%' OR serial LIKE '%" + search + "%' OR chassis LIKE '%" + search + "%'" ;
+                using (MySqlCommand cmd = new MySqlCommand(query))
+                {
+                    cmd.Connection = con;
+                    con.Open();
+                    using (MySqlDataReader sdr = cmd.ExecuteReader())
+                    {
+                        while (sdr.Read())
+                        {
+
+                            vehicles.Add(new Vehicle
+                            {
+
+                                vrm = (sdr["vrm"]).ToString(),
+                                make = sdr["make"].ToString(),
+                                model = sdr["model"].ToString(),
+                                year = sdr["year"].ToString(),
+                                engine = sdr["serial"].ToString(),
+                                chassis = sdr["chassis"].ToString(),
+                                colour = sdr["colour"].ToString()
+
+                            });
+
+                        }
+
+                    }
+
+                    con.Close();
+
+                }
+
+            }
+
+            return vehicles;
+
+        }
+        
         public static Vehicle getVehicleFromVRM(string vrm)
         {
 
@@ -158,6 +247,39 @@ namespace GARITS.Providers
             using (MySqlConnection con = new MySqlConnection(connection))
             {
                 string query = "INSERT INTO Vehicles VALUES (@vrm, @make, @model, @year, @serial, @chassis, @colour)";
+                using (MySqlCommand cmd = new MySqlCommand(query))
+                {
+
+                    cmd.Parameters.AddWithValue("@vrm", vehicle.vrm);
+                    cmd.Parameters.AddWithValue("@make", vehicle.make);
+                    cmd.Parameters.AddWithValue("@model", vehicle.model);
+                    cmd.Parameters.AddWithValue("@year", vehicle.year);
+                    cmd.Parameters.AddWithValue("@serial", vehicle.engine);
+                    cmd.Parameters.AddWithValue("@chassis", vehicle.chassis);
+                    cmd.Parameters.AddWithValue("@colour", vehicle.colour);
+                    
+                    cmd.Connection = con;
+                    con.Open();
+
+                    cmd.ExecuteNonQuery();
+
+                    con.Close();
+
+                }
+
+            }
+            
+        }
+        
+        public static void updateVehicle(Vehicle vehicle)
+        {
+            
+            
+            Console.Out.WriteLine(vehicle.vrm);
+            
+            using (MySqlConnection con = new MySqlConnection(connection))
+            {
+                string query = "UPDATE Vehicles SET make = @make, model = @model, year = @year, serial = @serial, chassis = @chassis, colour = @colour WHERE vrm = @vrm";
                 using (MySqlCommand cmd = new MySqlCommand(query))
                 {
 

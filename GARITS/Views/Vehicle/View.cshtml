@@ -1,0 +1,91 @@
+
+@{
+
+    var vehicles = (List<Vehicle>)ViewData["Vehicles"];
+    var search = (string) ViewData["Search"];
+    
+}
+
+<div class="row">
+
+
+    <div class="col-md-12">
+
+        <div class="card">
+
+            <div class="card-header" style="display: inline-block">
+
+                <div style="display: inline-block; margin-top: 8px">
+                    <h5>View Vehicles</h5>
+                </div>
+                
+                <div class="float-right" style="display: inline-block">
+                    
+                    <button type="button" class="btn btn-primary" href="#" role="button">Add Vehicle</button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    
+
+</div>
+
+<br>
+
+<div class="row">
+    
+    <div class="col-md-3">
+        
+        <div class="card">
+            
+            <h5 class="card-header">Search</h5>
+            <div class="card-body">
+                <form action="~/Vehicle/Search" method="get">
+                    <div class="form-group">
+                        <input name="search" tabindex="1" type="text" class="form-control" id="search" placeholder="Search">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </form>
+                
+            </div>
+            
+        </div>
+        
+    </div>
+
+    <div class="col-md-9 parts-list">
+
+        @if (search != null)
+        {
+            <h6 style="margin-top: 6px">Results for "@search".</h6>
+        }
+        <p>@vehicles.Count vehicles(s) found.</p>
+        
+        <hr>
+        
+        @foreach (Vehicle vehicle in vehicles)
+        {
+            
+            <p style="padding: 10px 10px 10px 0"><span class="registration-ui">@vehicle.vrm</span></p>
+            <p>@vehicle.make @vehicle.model @vehicle.year</p>
+            <p>@vehicle.colour</p>
+            <p>Engine Serial: @vehicle.engine</p>
+            <p>Chassis Number: @vehicle.chassis</p>
+                                           
+            <div style="display: inline-block; margin-top: 10px">
+                <a class="btn btn-primary" style="margin-right: 5px" href="~/Vehicle/ViewVehiclesJobs?vrm=@vehicle.vrm" role="button">View Jobs</a>
+                <a class="btn btn-primary" style="margin-right: 5px" href="~/Job/BookAddVehicle?vrm=@vehicle.vrm" role="button">New Job</a>
+                <a class="btn btn-primary" style="margin-right: 5px" href="~/Vehicle/EditVehicle?vrm=@vehicle.vrm" role="button">Edit</a>
+            </div>
+            
+            <hr>
+
+        }
+
+    </div>
+
+</div>

@@ -1,0 +1,87 @@
+
+@{
+
+    var vehicle = (Vehicle)ViewData["Vehicle"];
+    
+}
+
+<div class="row">
+
+    <div class="col-md-12">
+
+        <div class="card">
+
+            <div class="card-header" style="display: inline-block">
+
+                <div style="display: inline-block; margin-top: 8px">
+                    <h5>Edit Vehicle</h5>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<br>
+
+<div class="row">
+    
+    <div class="col-md-12">
+
+        <div class="card">
+            <div class="card-header">
+                Edit Vehicle Details
+            </div>
+            <div class="card-body">
+ 
+                <p class="card-text">Please provide the following details to edit a vehicle.</p>
+
+                <form action="~/Vehicle/UpdateVehicle" method="post">
+
+                    
+                        <input type="hidden" class="form-control" id="vrm" name="vrm" value="@vehicle.vrm">
+                    
+
+                    <div class="form-group">
+                        <label for="make">Make</label>
+                        <input type="text" class="form-control" id="make" name="make" value="@vehicle.make">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="model">Model</label>
+                        <input type="text" class="form-control" id="model" name="model" value="@vehicle.model">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="year">Year</label>
+                        <input type="number" class="form-control" id="year" name="year" value="@vehicle.year">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="colour">Colour</label>
+                        <input type="text" class="form-control" id="colour" name="colour" value="@vehicle.colour">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="serial">Engine Serial Number</label>
+                        <input type="text" class="form-control" id="serial" name="serial" value="@vehicle.engine">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="chassis">Chassis Number</label>
+                        <input type="text" class="form-control" id="chassis" name="chassis" value="@vehicle.chassis">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Update</button>
+
+                </form>
+
+            </div>
+        </div>
+    
+    </div>
+
+</div>

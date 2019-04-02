@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using GARITS.Models;
 using System.Data;
 using System.Configuration;
+using System.Globalization;
 using System.Security.Cryptography;
 using System.Security.Policy;
 using System.Text;
@@ -86,8 +87,11 @@ namespace GARITS.Providers
 
         }
 
-        public static List<Job> getAllJobs(string filter, DateTime start, DateTime end)
+        public static List<Job> getAllJobs(string filter, string start, string end)
         {
+
+            DateTime startDate = DateTime.ParseExact(start, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            DateTime endDate = DateTime.ParseExact(end, "dd/MM/yyyy", CultureInfo.InvariantCulture);
             
             List<Job> jobs = new List<Job>();
 
@@ -100,29 +104,25 @@ namespace GARITS.Providers
                 {
                     
                     case "ALL":
-                        query = "SELECT jobID FROM Jobs WHERE startDate BETWEEN @start AND @end";
+                        query = "SELECT jobID FROM Jobs WHERE startDate BETWEEN CAST('" + startDate.ToString("yyyy-MM-dd") +"' AS DATE) AND CAST('" + endDate.ToString("yyyy-MM-dd") +"' AS DATE)";
                         break;
                     case "COMPLETE":
-                        query = "SELECT jobID FROM Jobs WHERE status LIKE 'Complete%' AND startDate BETWEEN @start AND @end";
+                        query = "SELECT jobID FROM Jobs WHERE status LIKE 'Complete%' AND startDate BETWEEN CAST('" + startDate.ToString("yyyy-MM-dd") +"' AS DATE) AND CAST('" + endDate.ToString("yyyy-MM-dd") +"' AS DATE)";
                         break;
                     case "PAID":
-                        query = "SELECT jobID FROM Jobs WHERE status = 'Complete - Paid' AND startDate BETWEEN @start AND @end";
+                        query = "SELECT jobID FROM Jobs WHERE status = 'Complete - Paid' AND startDate BETWEEN CAST('" + startDate.ToString("yyyy-MM-dd") +"' AS DATE) AND CAST('" + endDate.ToString("yyyy-MM-dd") +"' AS DATE)";
                         break;
                     case "UNPAID":
-                        query = "SELECT jobID FROM Jobs WHERE status = 'Complete - Awaiting Payment' AND startDate BETWEEN @start AND @end";
+                        query = "SELECT jobID FROM Jobs WHERE status = 'Complete - Awaiting Payment' AND startDate BETWEEN CAST('" + startDate.ToString("yyyy-MM-dd") +"' AS DATE) AND CAST('" + endDate.ToString("yyyy-MM-dd") +"' AS DATE)";
                         break;
                     case "ONGOING":
-                        query = "SELECT jobID FROM Jobs WHERE status = 'Ongoing' AND startDate BETWEEN @start AND @end";
+                        query = "SELECT jobID FROM Jobs WHERE status = 'Ongoing' AND startDate BETWEEN CAST('" + startDate.ToString("yyyy-MM-dd") +"' AS DATE) AND CAST('" + endDate.ToString("yyyy-MM-dd") +"' AS DATE)";
                         break;
                     
                 }
                 
                 using (MySqlCommand cmd = new MySqlCommand(query))
                 {
-                    cmd.Parameters.AddWithValue("@start", start);
-                    cmd.Parameters.AddWithValue("@end", end);
-                    
-                    Console.Out.WriteLine(cmd.CommandText);
                     
                     cmd.Connection = con;
                     con.Open();
@@ -138,6 +138,7 @@ namespace GARITS.Providers
                     }
 
                     con.Close();
+                    con.Dispose();
 
                 }
 
@@ -216,6 +217,39 @@ namespace GARITS.Providers
             }
 
             return vehicle;
+
+        }
+
+        public static List<string> getPreviousJobs(string vrm, string jobID)
+        {
+
+            List<string> jobIDs = new List<string>();
+            
+            using (MySqlConnection con = new MySqlConnection(connection))
+            {
+                string query = "SELECT jobID FROM JobVehicle WHERE vrm = '" + vrm + "'";
+                using (MySqlCommand cmd = new MySqlCommand(query))
+                {
+                    cmd.Connection = con;
+                    con.Open();
+                    using (MySqlDataReader sdr = cmd.ExecuteReader())
+                    {
+                        while (sdr.Read())
+                        {
+
+                            if (jobID != sdr["jobID"].ToString()) jobIDs.Add(sdr["jobID"].ToString());
+
+                        }
+
+                    }
+
+                    con.Close();
+
+                }
+
+            }
+
+            return jobIDs;
 
         }
 

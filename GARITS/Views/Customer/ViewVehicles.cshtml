@@ -1,0 +1,84 @@
+
+@{
+
+    var customer = (Customer)ViewData["Customer"];
+    var vehicles = (List<Vehicle>) ViewData["Vehicles"];
+    
+}
+
+<div class="row">
+
+
+    <div class="col-md-12">
+
+        <div class="card">
+
+            <div class="card-header" style="display: inline-block">
+
+                <div style="display: inline-block; margin-top: 8px">
+                    <h5>View Customer Vehicles</h5>
+                </div>
+                
+                <div class="float-right" style="display: inline-block">
+                    
+                    <a class="btn btn-primary" href="~/Vehicle/AddVehicle" role="button">Add Vehicle</a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    
+
+</div>
+
+<br>
+
+<div class="row">
+    
+    <div class="col-md-3">
+        
+        <div class="card">
+            
+            <h5 class="card-header">Customer</h5>
+            <div class="card-body">
+                
+                <p class="card-text">@customer.firstname @customer.lastname</p>
+                <p class="card-text">@customer.phone</p>
+                <p class="card-text">@customer.email</p>
+                
+            </div>
+            
+        </div>
+        
+    </div>
+
+    <div class="col-md-9 parts-list">
+        
+        <p>@vehicles.Count vehicles(s) found.</p>
+        
+        <hr>
+        
+        @foreach (Vehicle vehicle in vehicles)
+        {
+            
+            <p style="padding: 10px 10px 10px 0"><span class="registration-ui">@vehicle.vrm</span></p>
+            <p>@vehicle.make @vehicle.model @vehicle.year</p>
+            <p>@vehicle.colour</p>
+            <p>Engine Serial: @vehicle.engine</p>
+            <p>Chassis Number: @vehicle.chassis</p>
+                                           
+            <div style="display: inline-block; margin-top: 10px">
+                <a class="btn btn-primary" style="margin-right: 5px" href="~/Vehicle/ViewJobs?vrm=@vehicle.vrm" role="button">View Jobs</a>
+                <a class="btn btn-primary" style="margin-right: 5px" href="~/Vehicle/Edit?vrm=@vehicle.vrm" role="button">Edit</a>
+            </div>
+            
+            <hr>
+
+        }
+
+    </div>
+
+</div>

@@ -1,0 +1,100 @@
+
+@{
+
+    var customer = (Customer)ViewData["Customer"];
+    
+}
+
+<div class="row">
+
+    <div class="col-md-12">
+
+        <div class="card">
+
+            <div class="card-header" style="display: inline-block">
+
+                <div style="display: inline-block; margin-top: 8px">
+                    <h5>Edit Customer</h5>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<br>
+
+<div class="row">
+    
+    <div class="col-md-12">
+
+        <div class="card">
+            <div class="card-header">
+                Edit Customer Details
+            </div>
+            <div class="card-body">
+ 
+                <p class="card-text">Please provide the following details to edit a customer.</p>
+
+                <form action="~/Customer/UpdateCustomer" method="post">
+                    
+                    <input type="hidden" class="form-control" id="customerID" name="customerID" value="@customer.customerID">
+
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" class="form-control" id="title" name="title" value="@customer.title">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="firstname">First Name</label>
+                        <input type="text" class="form-control" id="firstname" name="firstname" value="@customer.firstname">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="lastname">Last Name</label>
+                        <input type="text" class="form-control" id="lastname" name="lastname" value="@customer.lastname">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" value="@customer.email">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tel">Phone</label>
+                        <input type="tel" class="form-control" id="tel" name="tel" value="@customer.phone">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="address1">Address Line One</label>
+                        <input type="text" class="form-control" id="address1" name="address1" value="@customer.addressline1">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="address2">Address Line Two</label>
+                        <input type="text" class="form-control" id="address2" name="address2" value="@customer.addressline2">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="county">County</label>
+                        <input type="text" class="form-control" id="county" name="county" value="@customer.county">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="postcode">Post Code</label>
+                        <input type="text" class="form-control" id="postcode" name="postcode" value="@customer.postcode">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Update</button>
+
+                </form>
+
+            </div>
+        </div>
+    
+    </div>
+
+</div>

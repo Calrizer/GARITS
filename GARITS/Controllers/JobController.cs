@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Security.Policy;
 using System.Threading.Tasks;
@@ -7,8 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using GARITS.Models;
 using GARITS.Providers;
-
-// For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace GARITS.Controllers
 {
@@ -21,16 +20,23 @@ namespace GARITS.Controllers
 
             string jobID = id;
 
-            ViewData["JobDetails"] = JobProvider.getJobDetails(jobID);
+            Job job = JobProvider.getJobDetails(jobID);
+
+            ViewData["JobDetails"] = job;
+            ViewData["Previous"] = JobProvider.getPreviousJobs(job.vehicle.vrm, jobID);
 
             return View("Job");
 
         }
 
-        public IActionResult ViewJobs()
+        public IActionResult ViewJobs(string filter, string start, string end)
         {
-
-            ViewData["Jobs"] = JobProvider.getAllJobs("COMPLETE", new DateTime(2018, 11, 01), DateTime.Today);
+            
+            ViewData["Filter"] = filter;
+            ViewData["Start"] = DateTime.ParseExact(start, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            ViewData["End"] = DateTime.ParseExact(end, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            
+            ViewData["Jobs"] = JobProvider.getAllJobs(filter, start, end);
             
             return View("View");
 
@@ -77,7 +83,7 @@ namespace GARITS.Controllers
             {
 
                 jobID = JobProvider.GetUniqueNumber(8),
-                start = DateTime.Today,
+                start = new DateTime(DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day),
                 end = null,
                 paid = null,
                 bay = Int32.Parse(bay),
@@ -116,7 +122,6 @@ namespace GARITS.Controllers
 
         }
 
-        [HttpPost]
         public IActionResult Invoice(string jobID)
         {
 
@@ -137,7 +142,6 @@ namespace GARITS.Controllers
 
         }
 
-        [HttpPost]
         public IActionResult JobSheet(string jobID)
         {
 

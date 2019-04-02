@@ -27,17 +27,20 @@
 
             <div class="collapse navbar-collapse" id="navbarsExample07">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="~/">Home<span class="sr-only">(current)</span></a>
+                    <li class="nav-item">
+                        <a class="nav-link" href="~/">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Jobs</a>
+                        <a class="nav-link" href="~/Job/ViewJobs?filter=ONGOING&start=@DateTime.Today.Add(new TimeSpan(-30, 0, 0, 0)).ToString("dd/MM/yyyy")&end=@DateTime.Today.ToString("dd/MM/yyyy")">Jobs</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Customers</a>
+                        <a class="nav-link" href="~/Customer/ViewCustomers">Customers</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Parts</a>
+                        <a class="nav-link" href="~/Vehicle/ViewVehicles">Vehicles</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="~/Part/Parts">Parts</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav px-3">
