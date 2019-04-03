@@ -1,0 +1,120 @@
+
+@{
+
+    var customers = (List<Customer>)ViewData["Customers"];
+    var search = (string) ViewData["Search"];
+    var vehicle = (Vehicle) ViewData["Vehicle"];
+    
+}
+
+<div class="row">
+
+
+    <div class="col-md-12">
+
+        <div class="card">
+
+            <div class="card-header" style="display: inline-block">
+
+                <div style="display: inline-block; margin-top: 8px">
+                    <h5>Select Customer</h5>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    
+
+</div>
+
+<br>
+
+<div class="row">
+    
+    <div class="col-md-3">
+        
+        <div class="card">
+            
+            <h5 class="card-header">Search</h5>
+            <div class="card-body">
+                <p class="card-text">Search for an existing customer to add vehicle to.</p>
+                <form action="~/Customer/AddVehicleSearch" method="get">
+                        
+                    <input type="hidden" class="form-control" id="vrm" name="vrm" value="@vehicle.vrm">
+                        
+                    <div class="form-group">
+                        <input name="search" tabindex="1" type="text" class="form-control" id="search" placeholder="Search">
+                    </div>
+                        
+                    <button type="submit" class="btn btn-primary">Search</button>
+                    
+                </form>
+                
+            </div>
+            
+        </div>
+        
+        <br>
+        
+        <div class="card">
+            <div class="card-header">
+                Vehicle
+            </div>
+            <div class="card-body">
+                <p><span class="registration-ui">@vehicle.vrm</span></p>
+                <p class="card-text">Details: @vehicle.make @vehicle.model</p>
+                <p class="card-text">Year: @vehicle.year</p>
+                <p class="card-text">Colour: @vehicle.colour</p>
+            </div>
+        </div>
+        
+    </div>
+
+    <div class="col-md-9 parts-list">
+
+        @if (search != null)
+        {
+            <h6 style="margin-top: 6px">Results for "@search".</h6>
+        }
+        <p>@customers.Count customer(s) found.</p>
+        
+        <hr>
+        
+        @foreach (Customer customer in customers)
+        {
+            
+            <h5>@customer.title @customer.firstname @customer.lastname</h5>
+            
+            <div class="row">
+                
+                <div class="col-md-6">
+                
+                    <p style="margin-bottom: 4px">Customer Since: @customer.registered.ToString("dd/MM/yyyy")</p>
+                    <p style="margin-bottom: 4px">ID: @customer.customerID</p>
+                    <p style="margin-bottom: 4px">@customer.email</p>
+                    <p style="margin-bottom: 4px">@customer.phone</p>
+                
+                </div>
+                
+                <div class="col-md-6">
+                
+                    <p style="margin-bottom: 4px">@customer.addressline1</p>                     
+                    <p style="margin-bottom: 4px">@customer.addressline2</p> 
+                    <p style="margin-bottom: 4px">@customer.county</p> 
+                    <p style="margin-bottom: 4px">@customer.postcode</p> 
+                
+                </div>
+                
+            </div>
+                    
+            <a class="btn btn-primary" href="~/Customer/RegisterExistingCustomerWithVehicle?vrm=@vehicle.vrm&customerID=@customer.customerID" role="button">Select</a>
+            
+            <hr>
+
+        }
+
+    </div>
+
+</div>

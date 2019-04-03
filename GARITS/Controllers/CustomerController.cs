@@ -27,6 +27,17 @@ namespace GARITS.Controllers
             return View("View");
 
         }
+
+        public IActionResult AddVehicleSearch(string vrm, string search)
+        {
+            
+            ViewData["Customers"] = CustomerProvider.searchCustomers(search);
+            ViewData["Search"] = search;
+            ViewData["Vehicle"] = VehicleProvider.getVehicleFromVRM(vrm);
+
+            return View("AddVehicleSearchCustomer");
+
+        }
         
         public IActionResult ViewCustomersVehicles(string customerID)
         {
@@ -93,6 +104,8 @@ namespace GARITS.Controllers
             
         }
         
+        
+        
         [HttpPost]
         public IActionResult RegisterCustomerWithVehicle(string vrm, string title, string firstname, string lastname, string email, string tel, string address1, string address2, string county, string postcode)
         {
@@ -117,6 +130,15 @@ namespace GARITS.Controllers
             
             CustomerProvider.addCustomer(customer);
             CustomerProvider.assignVehicle(vrm, customer.customerID);
+            
+            return RedirectToAction("BookAddVehicle", "Job", new {vrm = vrm});
+            
+        }
+        
+        public IActionResult RegisterExistingCustomerWithVehicle(string vrm, string customerID)
+        {
+
+            CustomerProvider.assignVehicle(vrm, customerID);
             
             return RedirectToAction("BookAddVehicle", "Job", new {vrm = vrm});
             

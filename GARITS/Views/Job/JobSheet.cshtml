@@ -9,7 +9,35 @@
 
 }
 
-<div class="invoice-box">
+<div class="row">
+
+    <div class="col-md-12">
+
+        <div class="card">
+
+            <div class="card-header" style="display: inline-block">
+
+                <div style="display: inline-block; margin-top: 8px">
+                    <h5>Job Sheet View</h5>
+                </div>
+                
+                <div class="float-right" style="display: inline-block">
+                    
+                    <button type="button" onclick="printContent('jobsheet');" class="btn btn-primary">Print</button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    
+</div>
+
+<br>
+
+<div class="invoice-box" id="jobsheet">
     
     <table cellpadding="0" cellspacing="0">
 
@@ -95,5 +123,15 @@
     </p>
 
 </div>
+
+<script>
+    function printContent(el){
+        var restorepage = $('body').html();
+        var printcontent = $('#' + el).clone();
+        $('body').empty().html(printcontent);
+        window.print();
+        $('body').html(restorepage);
+    }
+</script>
 
 

@@ -30,7 +30,31 @@
 <div class="row">
     
     <div class="col-md-3">
-
+        
+        
+        <div class="card">
+            
+            <h5 class="card-header">Search</h5>
+            <div class="card-body">
+                <p class="card-text">Search for an existing customer to add vehicle to.</p>
+                <form action="~/Customer/AddVehicleSearch" method="get">
+                        
+                    <input type="hidden" class="form-control" id="vrm" name="vrm" value="@vehicle.vrm">
+                        
+                    <div class="form-group">
+                        <input name="search" tabindex="1" type="text" class="form-control" id="search" placeholder="Search">
+                    </div>
+                        
+                    <button type="submit" class="btn btn-primary">Search</button>
+                    
+                </form>
+                
+            </div>
+            
+        </div>
+        
+        <br>
+        
         <div class="card">
             <div class="card-header">
                 Vehicle

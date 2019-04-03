@@ -103,7 +103,7 @@ namespace GARITS.Providers
                 switch (filter)
                 {
                     
-                    case "ALL":
+                    default: 
                         query = "SELECT jobID FROM Jobs WHERE startDate BETWEEN CAST('" + startDate.ToString("yyyy-MM-dd") +"' AS DATE) AND CAST('" + endDate.ToString("yyyy-MM-dd") +"' AS DATE)";
                         break;
                     case "COMPLETE":
@@ -117,6 +117,15 @@ namespace GARITS.Providers
                         break;
                     case "ONGOING":
                         query = "SELECT jobID FROM Jobs WHERE status = 'Ongoing' AND startDate BETWEEN CAST('" + startDate.ToString("yyyy-MM-dd") +"' AS DATE) AND CAST('" + endDate.ToString("yyyy-MM-dd") +"' AS DATE)";
+                        break;
+                    case "MOT":
+                        query = "SELECT jobID FROM Jobs WHERE type = 'MoT' AND startDate BETWEEN CAST('" + startDate.ToString("yyyy-MM-dd") +"' AS DATE) AND CAST('" + endDate.ToString("yyyy-MM-dd") +"' AS DATE)";
+                        break;
+                    case "REPAIR":
+                        query = "SELECT jobID FROM Jobs WHERE type = 'Repair' AND startDate BETWEEN CAST('" + startDate.ToString("yyyy-MM-dd") +"' AS DATE) AND CAST('" + endDate.ToString("yyyy-MM-dd") +"' AS DATE)";
+                        break;
+                    case "CHECK":
+                        query = "SELECT jobID FROM Jobs WHERE type = 'Check / Examination' AND startDate BETWEEN CAST('" + startDate.ToString("yyyy-MM-dd") +"' AS DATE) AND CAST('" + endDate.ToString("yyyy-MM-dd") +"' AS DATE)";
                         break;
                     
                 }

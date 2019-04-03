@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
@@ -10,6 +11,9 @@ using Newtonsoft.Json.Linq;
 using Microsoft.AspNetCore.Mvc;
 using GARITS.Providers;
 using GARITS.Models;
+using MySql.Data.MySqlClient;
+using System.Web;
+using StackExchange.Redis;
 
 // For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -17,6 +21,9 @@ namespace GARITS.Controllers
 {
     public class AdminController : Controller
     {
+        
+        private static string connection = ConfigurationManager.ConnectionStrings["connect"].ConnectionString;
+        
         // GET: /<controller>/
         public IActionResult Dashboard()
         {
@@ -110,6 +117,36 @@ namespace GARITS.Controllers
             ViewData["vrm"] = vrm;
 
             return View();
+
+        }
+        
+        public FileResult Download()
+        {
+
+            return PhysicalFile(AppDomain.CurrentDomain.BaseDirectory + "backup.sql", "application/force-download", "backup.sql");
+        }
+        
+        public IActionResult Backup()
+        {
+
+
+            string file = AppDomain.CurrentDomain.BaseDirectory + "backup.sql";
+            Console.Out.WriteLine(file);
+            using (MySqlConnection conn = new MySqlConnection(connection))
+            {
+                using (MySqlCommand cmd = new MySqlCommand())
+                {
+                    using (MySqlBackup mb = new MySqlBackup(cmd))
+                    {
+                        cmd.Connection = conn;
+                        conn.Open();
+                        mb.ExportToFile(file);
+                        conn.Close();
+                    }
+                }
+            }
+
+            return RedirectToAction("Download");
 
         }
 
