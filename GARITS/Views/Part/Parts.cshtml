@@ -52,8 +52,8 @@
                     {
                         isLowStock = true;
                     }
-                        @if (isLowStock)
-                        {
+                    @if (isLowStock)
+                    {
                         <tr class="isLowStock">
                             <td id="partID">
                                 @part.partID
@@ -81,9 +81,9 @@
                             </td>
                         </tr>
 
-                        }
-                        else
-                        {
+                    }
+                    else
+                    {
                         <tr>
                             <td id="partID">
                                 @part.partID
@@ -110,7 +110,7 @@
                                 @part.threshold
                             </td>
                         </tr>
-                        }
+                    }
                 }
             </tbody>
         </table>
@@ -119,6 +119,21 @@
     <div style="display: inline-block">
         <a class="btn btn-primary" role="button" asp-action="AddNewPart">Add Part</a>
         <a class="btn btn-primary" role="button" asp-action="ReplenishStock">Replenish Stock</a>
+        <br />
+        <div class="card">
+            <div class="card-header">Customer Parts Order</div>
+            <div class="card-body">
+                <p class="card-text">Enter a customer ID to produce parts order.</p>
+
+                <form action="~/part/OrderAddCustomer" method="post">
+                    <div class="form-group">
+                        <input name="customerID" tabindex="1" type="text" class="form-control" id="customerID" placeholder="Customer id">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+
+            </div>
+        </div>
         <form method="get" action="~/Part/ChangePartDetails">
             <div class="form-group">
                 <label for="partID">Part</label>
@@ -132,5 +147,10 @@
             <button type="submit" class="btn btn-primary">Edit Part details</button>
         </form>
     </div>
+
+    <div class="col-md-3">
+        
+    </div>
+
 </body>
 </html>

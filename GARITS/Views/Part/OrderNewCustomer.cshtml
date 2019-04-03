@@ -1,0 +1,82 @@
+﻿
+@{
+    ViewData["Title"] = "OrderNewCustomer";
+}
+
+
+
+
+@using GARITS.Models
+@using GARITS.Providers
+@using System.Collections
+
+@model Customer
+@{ 
+    var id = (string) TempData["CustomerID"];
+    DateTime dateTime = DateTime.Now;
+}
+
+
+<h2>OrderNewCustomer</h2>
+
+<!doctype html>
+<html lang="en">
+<body>
+    <h2>Customer Details</h2>
+
+    <div>
+        <form action="~/Part/OrderNewCustomer" method="post">
+
+            <div class="form-group">
+                <input name="customerID" type="text" class="form-control" id="customerID" value="@id" readonly>
+            </div>
+            <div class="form-group">
+                <input name="firstname" type="datetime" class="form-control" id="registered" value=@dateTime readonly>
+            </div>
+            <div class="form-group">
+                <label for="firstname">Customer first name</label>
+                <input name="firstname" type="text" class="form-control" id="firstname" placeholder="Enter customer's first name">
+            </div>
+            <div class="form-group">
+                <label for="lastname">Customer last name</label>
+                <input name="lastname" type="text" class="form-control" id="lastname" placeholder="Enter customer's last name">
+            </div>
+            <div class="form-group">
+                <label for="email">Customer Email address</label>
+                <input name="email" type="email" class="form-control" id="email" placeholder="Enter customer's email address">
+            </div>
+            <div class="form-group">
+                <label for="title">Customer title</label>
+                <input name="title" type="text" class="form-control" id="title" placeholder="Enter customer's title">
+            </div>
+            <div class="form-group">
+                <label for="addressline1">Address line 1</label>
+                <input name="addressline1" type="text" class="form-control" id="addressline1" placeholder="Line 1 of customer address">
+            </div>
+            <div class="form-group">
+                <label for="price">Address line 2</label>
+                <input name="addressline2" type="text" class="form-control" id="addressline2" placeholder="Line 2 of customer address">
+            </div>
+            <div class="form-group">
+                <label for="county">County</label>
+                <input name="county" type="text" class="form-control" id="county" placeholder="Enter customer's county">
+            </div>
+            <div class="form-group">
+                <label for="postcode">Postcode</label>
+                <input name="postcode" type="text" class="form-control" id="postcode" placeholder="Enter customer's postcode">
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone no.</label>
+                <input name="phone" type="tel" class="form-control" id="phone" placeholder="Enter customer's phone number">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        <div align="right">
+            <a class="btn btn-primary" role="button" asp-action="Parts">Back</a>
+        </div>
+    </div>
+
+
+</body>
+</html>
