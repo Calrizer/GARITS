@@ -89,8 +89,25 @@ namespace GARITS.Controllers
             TempData ["customerID"] = customerID;
             if (customer.customerID == null) return RedirectToAction("OrderNewCustomer", "Part");
 
-            TempData["Customer"] = customer;
-            return View("OrderParts");
+            ViewData["Customer"] = customer;
+
+            PartsProvider.clearOrder(customer.customerID);
+            PartsProvider.RemovePartsOrders(customer.customerID);
+            Order order = new Order
+            {
+                orderID = customer.customerID,
+                date = customer.registered,
+                addressline1 = customer.addressline1,
+                addressline2 = customer.addressline2,
+                town = customer.addressline2,
+                county = customer.county,
+                postcode = customer.postcode,
+                username = HttpContext.Session.GetString("user"),
+            };
+            PartsProvider.partsOrder(order);
+
+
+            return RedirectToAction("OrderParts", new { customerID = customerID });
         }
 
         [HttpGet]
@@ -167,6 +184,7 @@ namespace GARITS.Controllers
             if (!exists)
             {
                 PartsProvider.AddPartToOrder(customerID, partID, 1);
+                parts.Add(PartsProvider.getPartFromID(partID), 1);
             }
             TempData["ShoppingCart"] = parts;
             ViewData["CustomerID"] = customerID;

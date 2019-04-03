@@ -406,6 +406,24 @@ namespace GARITS.Providers
 
         }
 
+        public static void RemovePartsOrders(string orderID)
+        {
+            using (MySqlConnection con = new MySqlConnection(connection))
+            {
+                string query = "DELETE FROM Orders WHERE orderID = @orderID";
+                using (MySqlCommand cmd = new MySqlCommand(query))
+                {
+                    cmd.Parameters.AddWithValue("@orderID", orderID);
+                    cmd.Connection = con;
+                    con.Open();
+
+                    cmd.ExecuteNonQuery();
+                    
+                    con.Close();
+
+                }
+            }
+        }
 
         public static void PartOrderAddQuantity(string orderID, string partID, int quantity)
         {
