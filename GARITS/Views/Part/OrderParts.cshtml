@@ -1,0 +1,63 @@
+﻿
+@{
+    ViewData["Title"] = "OrderParts";
+}
+
+@using GARITS.Models
+@using GARITS.Providers
+@using System.Collections
+
+@model Part
+
+@{
+    var parts = (List<Part>)ViewData["Parts"];
+    var cart = (Dictionary<Part, int>)TempData["ShoppingCart"];
+    var customerID = (string)ViewData["CustomerID"];
+}
+
+
+<!doctype html>
+<html lang="en">
+<body>
+    <h2>Selected Parts</h2>
+        @{ 
+            if (parts == null)
+            {
+                <label>Select parts to order below.</label>
+            } else
+            {
+                    @foreach (KeyValuePair<Part, int> part in cart)
+                    {
+
+                        <label>@part.Key.partID @part.Key.name x @part.Value</label>
+                    }
+                        <form action="~/Part/GenerateInvoice" method="post">
+                            <input type="hidden" name="customerID" readonly value="@customerID">
+                            <button type="submit" class="btn btn-primary">Create invoice</button>
+                        </form>
+            }
+        }
+
+
+    <h2>Add parts</h2>
+        @foreach (Part part in parts)
+        {
+
+            <form action="~/Part/AddPart" method="post">
+                <div style="display: inline-block">
+                    
+                    <label for="name">@part.name</label>
+                    <input type="hidden" name="partID" readonly value="@part.partID">
+                    <input type="hidden" name="customerID" readonly value="@customerID">
+                    <button type="submit" class="btn btn-primary">Add to cart</button>
+
+                </div>
+            </form>
+        }
+
+
+    <div align="right">
+        <a class="btn btn-primary" role="button" asp-action="Parts">Back</a>
+    </div>
+</body>
+</html>

@@ -81,5 +81,123 @@ namespace GARITS.Controllers
             PartsProvider.replenishStock(partID, quantity);
             return RedirectToAction("ReplenishStock");
         }
+
+        [HttpPost]
+        public IActionResult OrderAddCustomer(string customerID)
+        {
+            Customer customer = CustomerProvider.getCustomerFromID(customerID);
+            TempData ["customerID"] = customerID;
+            if (customer.customerID == null) return RedirectToAction("OrderNewCustomer", "Part");
+
+            ViewData["Customer"] = customer;
+
+            PartsProvider.clearOrder(customer.customerID);
+            PartsProvider.RemovePartsOrders(customer.customerID);
+            Order order = new Order
+            {
+                orderID = customer.customerID,
+                date = customer.registered,
+                addressline1 = customer.addressline1,
+                addressline2 = customer.addressline2,
+                town = customer.addressline2,
+                county = customer.county,
+                postcode = customer.postcode,
+                username = HttpContext.Session.GetString("user"),
+            };
+            PartsProvider.partsOrder(order);
+
+
+            return RedirectToAction("OrderParts", new { customerID = customerID });
+        }
+
+        [HttpGet]
+        public IActionResult OrderNewCustomer(string customerID)
+        {
+            ViewData["customerID"] = customerID;
+            return View(customerID);
+        }
+
+        [HttpPost]
+        public IActionResult OrderNewCustomer(string customerID, string email, DateTime registered, string title, string firstname, string lastname, string addressline1, string addressline2, string county, string postcode, string phone)
+        {
+            Customer customer = new Customer
+            {
+                customerID = customerID,
+                email = email,
+                registered = registered,
+                title = title,
+                firstname = firstname,
+                lastname = lastname,
+                addressline1 = addressline1,
+                addressline2 = addressline2,
+                county = county,
+                postcode = postcode,
+                phone = phone
+            };
+            CustomerProvider.addCustomer(customer);
+
+            Order order = new Order
+            {
+                orderID = customerID,
+                date = registered,
+                addressline1 = addressline1,
+                addressline2 = addressline2,
+                town = addressline2,
+                county = county,
+                postcode = postcode,
+                username = HttpContext.Session.GetString("user"),
+            };
+            PartsProvider.partsOrder(order);
+
+            ViewData["Customer"] = customer;
+            return RedirectToAction("OrderParts", new { customerID = customerID });
+        }
+        
+        [HttpGet]
+        public IActionResult OrderParts(string customerID)
+        {
+            ViewData["CustomerID"] = customerID;
+            ViewData["Parts"] = PartsProvider.getParts();
+
+            Dictionary<Part, int> cart = new Dictionary<Part, int>();
+            TempData["ShoppingCart"] = cart;
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult AddPart(string partID, string customerID)
+        {
+            Dictionary<Part, int> parts = PartsProvider.getOrder(customerID);
+            bool exists = false;
+            if (parts != null)
+            {
+                foreach (KeyValuePair<Part, int> part in parts)
+                {
+                    if (part.Key.partID == partID)
+                    {
+                        PartsProvider.PartOrderAddQuantity(customerID, partID, 1);
+                        exists = true;
+                    }
+                }
+
+            }
+            if (!exists)
+            {
+                PartsProvider.AddPartToOrder(customerID, partID, 1);
+                parts.Add(PartsProvider.getPartFromID(partID), 1);
+            }
+            TempData["ShoppingCart"] = parts;
+            ViewData["CustomerID"] = customerID;
+            ViewData["Parts"] = PartsProvider.getParts();
+            return View("OrderParts");
+        }
+        public IActionResult GenerateInvoice(string customerID)
+        {
+            Dictionary<Part, int> parts = PartsProvider.getOrder(customerID);
+            ViewData["Parts"] = parts;
+            ViewData["Order"] = PartsProvider.getOrderDetails(customerID);
+            PartsProvider.clearOrder(customerID);
+            return View("PartInvoice");
+        }
     }
 }

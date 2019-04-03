@@ -1,0 +1,210 @@
+﻿
+@{
+
+    var partsTotal = 0.0;
+    var total = 0.0;
+    var month = "";
+
+    switch (DateTime.Today.Month.ToString())
+    {
+
+        case "1":
+            month = "January";
+            break;
+        case "2":
+            month = "February";
+            break;
+        case "3":
+            month = "March";
+            break;
+        case "4":
+            month = "April";
+            break;
+        case "5":
+            month = "May";
+            break;
+        case "6":
+            month = "June";
+            break;
+        case "7":
+            month = "July";
+            break;
+        case "8":
+            month = "August";
+            break;
+        case "9":
+            month = "September";
+            break;
+        case "10":
+            month = "October";
+            break;
+        case "11":
+            month = "November";
+            break;
+        case "12":
+            month = "December";
+            break;
+        default:
+            month = "Error";
+            break;
+
+    }
+    var order = (Order)ViewData["Order"];
+    var parts = (Dictionary<Part, int>)ViewData["Parts"];
+
+}
+
+<div class="invoice-box">
+    <table cellpadding="0" cellspacing="0">
+
+        <tr class="information">
+            <td colspan="2">
+                <table>
+                    <tr>
+                        <td>
+                            @order.addressline1<br>
+                            @order.addressline2<br>
+                            @order.county<br>
+                            @order.postcode<br>
+                            <br>
+                        </td>
+
+                        <td>
+                            Quick Fix Fitters<br>
+                            19 High Street<br>
+                            Ashford<br>
+                            Kent<br>
+                            CT16 8YY<br>
+                            <br>
+                            @DateTime.Today.Day @month @DateTime.Today.Year
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <div class="invoice-number">
+
+        <h5>ORDER ID: @("J" + order.orderID)</h5>
+
+    </div>
+
+    <br>
+
+    <table>
+
+        <tr class="heading">
+            <td>
+                Item
+            </td>
+            <td>
+                Part No
+            </td>
+            <td>
+                Unit Cost
+            </td>
+            <td>
+                Quantity
+            </td>
+            <td>
+                Cost
+            </td>
+        </tr>
+
+        @foreach (KeyValuePair<Part, int> part in parts)
+        {
+
+            <tr>
+
+                <td>
+                    @part.Key.name
+                </td>
+                <td>
+                    @part.Key.partID
+                </td>
+                <td>
+                    £@part.Key.price
+                </td>
+                <td>
+                    @part.Value
+                </td>
+                <td>
+                    £@(part.Key.price * part.Value)
+                </td>
+                @{
+                    partsTotal = partsTotal + (part.Key.price * part.Value);
+                }
+
+            </tr>
+
+        }
+
+        @{
+
+            total = partsTotal;
+
+        }
+
+        <tr class="total">
+
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>
+                Total
+            </td>
+            <td>
+                £@total.ToString("#.##")
+            </td>
+
+        </tr>
+
+        <tr>
+
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>
+                VAT
+            </td>
+            <td>
+                £@(((total / 100) * 20).ToString("#.##"))
+            </td>
+
+        </tr>
+
+        <tr class="grand">
+
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>
+                Grand Total
+            </td>
+            <td>
+                £@(((total + (total / 100) * 20).ToString("#.##")))
+            </td>
+
+        </tr>
+
+    </table>
+
+    <br>
+
+    <p>
+        Thank you for your valued custom. We look forward to receiving your payment in due course.
+    </p>
+
+    <br>
+
+    <p>
+        Yours sincerely,
+    </p>
+    <p>
+        G. Lancaster
+    </p>
+
+</div>
+
+
