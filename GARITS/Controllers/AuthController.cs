@@ -50,13 +50,7 @@ namespace GARITS.Controllers
 
                 HttpContext.Session.SetString("user", username);
 
-                
-                if (UserProvider.getUserFromUsername(username).role == "admin")
-                {
-                    return RedirectToAction("Dashboard", "admin");
-                } else {
-                    return RedirectToAction("index", "home");
-                }
+                return RedirectToAction("Index", "Home");
 
             }
 

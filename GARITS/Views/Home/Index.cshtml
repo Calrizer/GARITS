@@ -57,19 +57,16 @@
         </div>
         <br>
         <div class="card">
-            <div class="card-header">Updates</div>
+            <div class="card-header">Quick Links</div>
             <ul class="list-group">
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    Current Jobs
-                    <span class="badge badge-primary badge-pill">14</span>
+                    <a href="~/Job/ViewJobs?filter=ONGOING&start=@DateTime.Today.Add(new TimeSpan(-30, 0, 0, 0)).ToString("dd/MM/yyyy")&end=@DateTime.Today.ToString("dd/MM/yyyy")">Current Jobs</a>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    Overdue Invoices
-                    <span class="badge badge-primary badge-pill">2</span>
+                    <a href="~/Job/ViewJobs?filter=UNPAID&start=@DateTime.Today.Add(new TimeSpan(-90, 0, 0, 0)).ToString("dd/MM/yyyy")&end=@DateTime.Today.ToString("dd/MM/yyyy")">Overdue Invoices</a>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    All Customers
-                    <span class="badge badge-primary badge-pill">143</span>
+                    <a href="~/Customer/ViewCustomers">View All Customer</a>
                 </li>
             </ul>
         </div>

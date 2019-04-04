@@ -1,0 +1,111 @@
+
+
+@{
+
+    var job = (Job) ViewData["Job"];
+    
+}
+
+<div class="row">
+
+    <div class="col-md-12">
+
+        <div class="card">
+
+            <div class="card-header" style="display: inline-block">
+
+                <div style="display: inline-block; margin-top: 8px">
+                    <h5>MOT Reminder View</h5>
+                </div>
+                
+                <div class="float-right" style="display: inline-block">
+                    
+                    <button type="button" onclick="printContent('reminder');" class="btn btn-primary">Print</button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    
+</div>
+
+<br>
+
+<div class="invoice-box" id="reminder">
+    <table cellpadding="0" cellspacing="0">
+
+        <tr class="information">
+            <td colspan="2">
+                <table>
+                    <tr>
+                        <td>
+                            @job.customer.firstname @job.customer.lastname<br>
+                            @job.customer.addressline1<br>
+                            @job.customer.addressline2<br>
+                            @job.customer.county<br>
+                            @job.customer.postcode<br>
+                            <br>
+                            Dear @(job.customer.title + ".") @job.customer.lastname,
+                        </td>
+
+                        <td>
+                            Quick Fix Fitters<br>
+                            19 High Street<br>
+                            Ashford<br>
+                            Kent<br>
+                            CT16 8YY<br>
+                            <br>
+                            @DateTime.Today.ToString("d MMMM yyyy")
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <div class="invoice-number">
+
+        <h5>Reminder - MoT TEST DUE</h5>
+
+    </div>
+
+    <br>
+    <br> 
+
+    <h6>
+        Vehicle Registration No: @job.vehicle.vrm<br>
+        Renewal Test Date: @job.end.Value.AddYears(1).ToString("d MMMM yyyy")<br>   
+    </h6>
+    
+    <br>
+    
+                <p>
+                    According to our records, the above vehicle is due to have its MoT certificate renewed on the date shown.<br>
+                    <br>
+                    Account Holders customers such as yourself are assured of our prompt attention, and we hope that you will use our services on this occasion in order to have the necessary test carried out on your vehicle. <br>
+                    <br>
+                    
+                </p>
+                
+    <br>
+    <p>
+        Yours sincerely,
+    </p>
+    <p>
+        G. Lancaster
+    </p>
+
+</div>
+
+<script>
+    function printContent(el){
+        var restorepage = $('body').html();
+        var printcontent = $('#' + el).clone();
+        $('body').empty().html(printcontent);
+        window.print();
+        $('body').html(restorepage);
+    }
+</script>

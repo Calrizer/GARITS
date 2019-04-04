@@ -1,0 +1,158 @@
+
+@{
+
+    var parts = (List<Part>) ViewData["Parts"];
+    var used = (Dictionary<string, int>) ViewData["Used"];
+    var start = (DateTime)ViewData["Start"];
+    var end = (DateTime)ViewData["End"];
+    
+}
+
+<div class="row">
+
+
+    <div class="col-md-12">
+
+        <div class="card">
+
+            <div class="card-header" style="display: inline-block">
+
+                <div style="display: inline-block; margin-top: 8px">
+                    <h5>Stock Level Report</h5>
+                </div>
+                
+                <div class="float-right" style="display: inline-block">
+                    
+                    <button style="display: inline-block" class="btn btn-primary" onclick="printContent('report');" type="button" role="button">Print</button>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+    
+
+</div>
+
+<br>
+
+<div class="row">
+    
+    <div class="col-md-12" id="report">
+    
+        <table class="table" style="width: 100%">
+
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Part ID</th>
+                <th>Manufacturer</th>
+                <th>Vehicle</th>
+                <th>Years</th>
+                <th>Price</th>
+                <th>Initial Stock</th>
+                <th>Initial Cost</th>
+                <th>Used</th>
+                <th>New Stock Level</th>
+                <th>Stock Cost</th>
+                <th>Threshold</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (Part part in parts)
+            {
+
+                int originalStock = part.quantity;
+                
+                if (used.ContainsKey(part.partID))
+                {
+                    originalStock = originalStock + used[part.partID];
+                }
+                
+                <tr>
+                    <td>
+                        @part.name
+                    </td>
+                    <td>
+                        @part.partID
+                    </td>
+                    <td>
+                        @part.manufacturer
+                    </td>
+                    <td>
+                        @part.vehicle
+                    </td>
+                    <td>
+                        @part.years
+                    </td>
+                    <td>
+                        £@part.price
+                    </td>
+                    <td>
+                        @originalStock
+                    </td>
+                    <td>
+                        
+                        £@(originalStock * part.price)
+                        
+                    </td>
+                    <td>
+                        @if (used.ContainsKey(part.partID))
+                        {
+                            @used[part.partID]
+                        }
+                        else
+                        {
+                            @(0)
+                        }
+                    </td>
+                    <td>
+                        @part.quantity
+                    </td>
+                    <td>
+                        £@(part.quantity * part.price)
+                    </td>
+                    <td>
+                        @part.threshold
+                    </td>
+                </tr>        
+            }
+            </tbody>
+        </table>
+        
+    </div>
+    
+</div>
+
+<div class="row">
+    
+    <form action="~/Report/ViewStockReport" method="get">
+        
+        <div class="form-group">
+            <label for="start">Start Date</label>
+            <input type="text" class="form-control" id="start" name="start" value="@start.ToString("dd/MM/yyyy")">
+        </div>
+
+
+        <div class="form-group">
+            <label for="end">End Date</label>
+            <input type="text" class="form-control" id="end" name="end" value="@end.ToString("dd/MM/yyyy")">
+        </div>
+        
+        <button type="submit" class="btn btn-primary" role="button">Generate</button>
+
+    </form>
+    
+</div>
+
+<script>
+    function printContent(el){
+        var restorepage = $('body').html();
+        var printcontent = $('#' + el).clone();
+        $('body').empty().html(printcontent);
+        window.print();
+        $('body').html(restorepage);
+    }
+</script>

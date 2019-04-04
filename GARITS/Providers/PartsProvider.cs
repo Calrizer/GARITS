@@ -214,8 +214,11 @@ namespace GARITS.Providers
                     cmd.ExecuteNonQuery();
 
                     con.Close();
+                    
                 }
+                
             }
+            
         }
 
 
@@ -265,6 +268,7 @@ namespace GARITS.Providers
 
                 }
             }
+
         }
 
         public static void editPartDetails(Part part)
@@ -355,6 +359,37 @@ namespace GARITS.Providers
                 }
             }
         }
+
+        public static Dictionary<Part, int> getAllOrders()
+        {
+            
+            Dictionary<Part, int> parts = new Dictionary<Part, int>();
+
+            using (MySqlConnection con = new MySqlConnection(connection))
+            {
+                string query = "SELECT * FROM PartOrder";
+                using (MySqlCommand cmd = new MySqlCommand(query))
+                {
+                    cmd.Connection = con;
+                    con.Open();
+
+                    using (MySqlDataReader sdr = cmd.ExecuteReader())
+                    {
+                        while (sdr.Read())
+                        {
+
+                            parts.Add(getPartFromID(sdr["partID"].ToString()), int.Parse(sdr["quantity"].ToString()));
+                        }
+                    }
+                    con.Close();
+                    
+                }
+            }
+            
+            return parts;
+            
+        }
+        
         public static Dictionary<Part, int> getOrder(string orderID)
         {
             Dictionary<Part, int> parts = new Dictionary<Part, int>();
@@ -373,7 +408,7 @@ namespace GARITS.Providers
                         while (sdr.Read())
                         {
 
-                            parts.Add(PartsProvider.getPartFromID(sdr["partID"].ToString()), int.Parse(sdr["quantity"].ToString()));
+                            parts.Add(getPartFromID(sdr["partID"].ToString()), int.Parse(sdr["quantity"].ToString()));
                         }
                     }
                     con.Close();

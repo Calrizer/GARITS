@@ -1,4 +1,4 @@
-﻿@{
+@{
     ViewData["Title"] = "Home Page";
 }
 
@@ -8,6 +8,7 @@
 
 @{
     var user = (User)ViewData["User"];
+    ViewData["Name"] = user.firstname + " " + user.lastname;
 }
 
 <div class="row">
@@ -19,9 +20,9 @@
                 <h1 class="display-4">Welcome back @user.firstname.</h1>
                 <p class="lead">What would you like to do today?</p>
                 <div style="display: inline-block">
-                    <a class="btn btn-primary" role="button" asp-action="CreateAccount">Create Account</a>
-                    <a class="btn btn-primary" role="button" asp-action="ManageAccounts">Manage Accounts</a>
-                    <a class="btn btn-primary" role="button" href="~/Part/Parts">Manage Parts</a>
+                    <a class="btn btn-primary" href="~/Job/Book" role="button">Add New Job</a>
+                    <a class="btn btn-primary" href="~/Job/ViewJobs?filter=UNPAID&start=@DateTime.Today.Add(new TimeSpan(-30, 0, 0, 0)).ToString("dd/MM/yyyy")&end=@DateTime.Today.ToString("dd/MM/yyyy")" role="button">Take Payment</a>
+                    <a class="btn btn-primary" href="~/Job/ViewJobs?filter=ONGOING&start=@DateTime.Today.Add(new TimeSpan(-30, 0, 0, 0)).ToString("dd/MM/yyyy")&end=@DateTime.Today.ToString("dd/MM/yyyy")" role="button">View All Jobs</a>
                 </div>
             </div>
         </div>
@@ -56,13 +57,16 @@
         </div>
         <br>
         <div class="card">
-            <div class="card-header">Tools</div>
+            <div class="card-header">Quick Links</div>
             <ul class="list-group">
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    <a href="~/Admin/ViewBackups">Backup</a>
+                    <a href="~/Job/ViewJobs?filter=ONGOING&start=@DateTime.Today.Add(new TimeSpan(-30, 0, 0, 0)).ToString("dd/MM/yyyy")&end=@DateTime.Today.ToString("dd/MM/yyyy")">Current Jobs</a>
                 </li>
                 <li class="list-group-item d-flex justify-content-between align-items-center">
-                    Manage Discounts
+                    <a href="~/Job/ViewJobs?filter=UNPAID&start=@DateTime.Today.Add(new TimeSpan(-90, 0, 0, 0)).ToString("dd/MM/yyyy")&end=@DateTime.Today.ToString("dd/MM/yyyy")">Overdue Invoices</a>
+                </li>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <a href="~/Customer/ViewCustomers">View All Customer</a>
                 </li>
             </ul>
         </div>

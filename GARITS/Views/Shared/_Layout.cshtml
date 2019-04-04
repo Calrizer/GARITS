@@ -42,6 +42,9 @@
                     <li class="nav-item">
                         <a class="nav-link" href="~/Part/Parts">Parts</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="~/Report/ViewStockReport?start=@DateTime.Today.Add(new TimeSpan(-30, 0, 0, 0)).ToString("dd/MM/yyyy")&end=@DateTime.Today.ToString("dd/MM/yyyy")">Reports</a>
+                    </li>
                 </ul>
                 <ul class="navbar-nav px-3">
                     <li class="nav-item text-nowrap">

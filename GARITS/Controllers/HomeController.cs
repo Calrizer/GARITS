@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -25,6 +24,26 @@ namespace GARITS.Controllers
             }
 
             ViewData["User"] = getAuthenticatedUser();
+            
+            switch (getAuthenticatedUser().role)
+            {
+                
+                case "admin":
+                    return RedirectToAction("Dashboard", "admin");
+                
+                case "receptionist":
+                    return View("Receptionist");
+                
+                case "franchisee":
+                    return View("Franchisee");
+                
+                case "mechanic":
+                    return View("Mechanic");
+                
+                case "foreperson":
+                    return View("Foreperson");
+                
+            }
 
             return View();
 
@@ -35,13 +54,6 @@ namespace GARITS.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        
-        /*public IActionResult ChangeName(User user)
-        {
-            string name = user.firstname;
-            UserProvider.changeName(name, getAuthenticatedUser().username);
-            return RedirectToAction("Index");
-        }*/
 
         private bool isAuthenticated()
         {

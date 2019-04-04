@@ -602,6 +602,39 @@ namespace GARITS.Providers
             
         }
 
+        public static List<Job> getMOTReminders()
+        {
+            
+           List<Job> jobs = new List<Job>();
+
+            using (MySqlConnection con = new MySqlConnection(connection))
+            {
+                string query = "SELECT jobID FROM Jobs WHERE type = 'MoT' AND endDate < CAST('" + DateTime.Today.Add(new TimeSpan(-365, 0, 0, 0)).ToString("yyyy-MM-dd") + "' AS DATE)";
+                using (MySqlCommand cmd = new MySqlCommand(query))
+                {
+                    cmd.Connection = con;
+                    con.Open();
+                    using (MySqlDataReader sdr = cmd.ExecuteReader())
+                    {
+                        while (sdr.Read())
+                        {
+
+                            jobs.Add(getJobDetails(sdr["jobID"].ToString()));
+
+                        }
+
+                    }
+
+                    con.Close();
+
+                }
+
+            }
+
+            return jobs;
+            
+        }
+
         public static void addJobNote(JobNote note, string jobID)
         {
 

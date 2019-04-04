@@ -18,6 +18,13 @@ namespace GARITS.Controllers
         public IActionResult ViewJob(string id)
         {
 
+            if (!isAuthenticated())
+            {
+
+                return RedirectToAction("Login", "Auth");
+
+            }
+            
             string jobID = id;
 
             Job job = JobProvider.getJobDetails(jobID);
@@ -32,6 +39,13 @@ namespace GARITS.Controllers
         public IActionResult ViewJobs(string filter, string start, string end)
         {
             
+            if (!isAuthenticated())
+            {
+
+                return RedirectToAction("Login", "Auth");
+
+            }
+            
             ViewData["Filter"] = filter;
             ViewData["Start"] = DateTime.ParseExact(start, "dd/MM/yyyy", CultureInfo.InvariantCulture);
             ViewData["End"] = DateTime.ParseExact(end, "dd/MM/yyyy", CultureInfo.InvariantCulture);
@@ -45,6 +59,13 @@ namespace GARITS.Controllers
         public IActionResult Book()
         {
 
+            if (!isAuthenticated())
+            {
+
+                return RedirectToAction("Login", "Auth");
+
+            }
+            
             return View("Book");
 
         }
@@ -53,6 +74,13 @@ namespace GARITS.Controllers
         public IActionResult BookVehicle(string type, string issue, string cosmetic, string resolution, string labour, string bay, string customerID, string vrm, string mechanic)
         {
 
+            if (!isAuthenticated())
+            {
+
+                return RedirectToAction("Login", "Auth");
+
+            }
+            
             JobNote estimate = new JobNote
             {
 
@@ -108,6 +136,13 @@ namespace GARITS.Controllers
         public IActionResult BookAddVehicle(string vrm)
         {
 
+            if (!isAuthenticated())
+            {
+
+                return RedirectToAction("Login", "Auth");
+
+            }
+            
             Vehicle vehicle = VehicleProvider.getVehicleFromVRM(vrm);
 
             if (vehicle.vrm == null) return RedirectToAction("AddVehicle", "Vehicle", new {vrm = vrm});
@@ -125,6 +160,13 @@ namespace GARITS.Controllers
         public IActionResult Invoice(string jobID)
         {
 
+            if (!isAuthenticated())
+            {
+
+                return RedirectToAction("Login", "Auth");
+
+            }
+            
             ViewData["InvoiceNote"] = JobProvider.getInvoiceNote(jobID);
             ViewData["JobDetails"] = JobProvider.getJobDetails(jobID);
 
@@ -135,6 +177,13 @@ namespace GARITS.Controllers
         public IActionResult Reminder(string jobID, string reminder)
         {
 
+            if (!isAuthenticated())
+            {
+
+                return RedirectToAction("Login", "Auth");
+
+            }
+            
             ViewData["JobDetails"] = JobProvider.getJobDetails(jobID);
             ViewData["Reminder"] = Int32.Parse(reminder);
             
@@ -145,6 +194,13 @@ namespace GARITS.Controllers
         public IActionResult JobSheet(string jobID)
         {
 
+            if (!isAuthenticated())
+            {
+
+                return RedirectToAction("Login", "Auth");
+
+            }
+            
             ViewData["EstimateNote"] = JobProvider.getEstimateNote(jobID);
             ViewData["JobDetails"] = JobProvider.getJobDetails(jobID);
             
@@ -156,6 +212,13 @@ namespace GARITS.Controllers
         public IActionResult AddNote(string type, string body, string jobID)
         {
 
+            if (!isAuthenticated())
+            {
+
+                return RedirectToAction("Login", "Auth");
+
+            }
+            
             JobNote note = new JobNote
             {
 
@@ -182,6 +245,13 @@ namespace GARITS.Controllers
         public IActionResult Pay(string jobID)
         {
             
+            if (!isAuthenticated())
+            {
+
+                return RedirectToAction("Login", "Auth");
+
+            }
+            
             JobProvider.updateStatus(jobID, "Complete - Paid");
             
             JobNote note = new JobNote
@@ -205,6 +275,13 @@ namespace GARITS.Controllers
         public IActionResult AddPart(string jobID, string search)
         {
 
+            if (!isAuthenticated())
+            {
+
+                return RedirectToAction("Login", "Auth");
+
+            }
+            
             List<Part> parts = new List<Part>();
 
             Dictionary<Part, int> existing = JobProvider.getPartsForJob(jobID);
@@ -255,9 +332,71 @@ namespace GARITS.Controllers
         public IActionResult AssignPart(string jobID, string partID, string quantity)
         {
 
+            if (!isAuthenticated())
+            {
+
+                return RedirectToAction("Login", "Auth");
+
+            }
+            
             PartsProvider.assignPartToJob(jobID, partID, Int32.Parse(quantity));
             
             return RedirectToAction("ViewJob", new {id = jobID});
+
+        }
+        
+        public IActionResult GetMOTReminders()
+        {
+            
+            if (!isAuthenticated())
+            {
+
+                return RedirectToAction("Login", "Auth");
+
+            }
+
+            ViewData["Jobs"] = JobProvider.getMOTReminders();
+
+            return View("ViewMOTReminders");
+
+
+        }
+        
+        public IActionResult MOTReminder(string jobID)
+        {
+            
+            if (!isAuthenticated())
+            {
+
+                return RedirectToAction("Login", "Auth");
+
+            }
+
+            ViewData["Job"] = JobProvider.getJobDetails(jobID);
+            
+            return View("MOTReminder");
+
+
+        }
+        
+        private bool isAuthenticated()
+        {
+
+            if (HttpContext.Session.GetString("user") != null)
+            {
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+        
+        public User getAuthenticatedUser()
+        {
+
+            return UserProvider.getUserFromUsername(HttpContext.Session.GetString("user"));
 
         }
 

@@ -13,6 +13,13 @@ namespace GARITS.Controllers
     {
         public IActionResult Parts()
         {
+            if (!isAuthenticated())
+            {
+
+                return RedirectToAction("Login", "Auth");
+
+            }
+            
             ViewData["Parts"] = PartsProvider.getParts();
             return View();
         }
@@ -20,12 +27,28 @@ namespace GARITS.Controllers
         [HttpGet]
         public IActionResult AddNewPart()
         {
+            
+            if (!isAuthenticated())
+            {
+
+                return RedirectToAction("Login", "Auth");
+
+            }
+            
             return View();
         }
 
         [HttpPost]
         public IActionResult AddNewPart(string partID, string name, string manufacturer, string vehicle, string years, float price, int quantity, int threshold)
         {
+            
+            if (!isAuthenticated())
+            {
+
+                return RedirectToAction("Login", "Auth");
+
+            }
+            
             Part part = new Part
             {
                 partID = partID,
@@ -46,6 +69,14 @@ namespace GARITS.Controllers
         [HttpGet]
         public IActionResult ChangePartDetails(string partID)
         {
+            
+            if (!isAuthenticated())
+            {
+
+                return RedirectToAction("Login", "Auth");
+
+            }
+            
             ViewData["Part"] = PartsProvider.getPartFromID(partID);
             return View();
         }
@@ -53,6 +84,14 @@ namespace GARITS.Controllers
         [HttpPost]
         public IActionResult ChangePartDetails(string partID, string name, string manufacturer, string vehicle, string years, float price, int quantity, int threshold)
         {
+            
+            if (!isAuthenticated())
+            {
+
+                return RedirectToAction("Login", "Auth");
+
+            }
+            
             Part part = new Part
             {
                 partID = partID,
@@ -71,6 +110,14 @@ namespace GARITS.Controllers
         [HttpGet]
         public IActionResult ReplenishStock()
         {
+            
+            if (!isAuthenticated())
+            {
+
+                return RedirectToAction("Login", "Auth");
+
+            }
+            
             ViewData["Parts"] = PartsProvider.getLowStockParts();
             return View();
         }
@@ -78,6 +125,14 @@ namespace GARITS.Controllers
         [HttpPost]
         public IActionResult ReplenishStock(string partID, int quantity)
         {
+            
+            if (!isAuthenticated())
+            {
+
+                return RedirectToAction("Login", "Auth");
+
+            }
+            
             PartsProvider.replenishStock(partID, quantity);
             return RedirectToAction("ReplenishStock");
         }
@@ -85,6 +140,14 @@ namespace GARITS.Controllers
         [HttpPost]
         public IActionResult OrderAddCustomer(string customerID)
         {
+            
+            if (!isAuthenticated())
+            {
+
+                return RedirectToAction("Login", "Auth");
+
+            }
+            
             Customer customer = CustomerProvider.getCustomerFromID(customerID);
             TempData ["customerID"] = customerID;
             if (customer.customerID == null) return RedirectToAction("OrderNewCustomer", "Part");
@@ -113,6 +176,14 @@ namespace GARITS.Controllers
         [HttpGet]
         public IActionResult OrderNewCustomer(string customerID)
         {
+            
+            if (!isAuthenticated())
+            {
+
+                return RedirectToAction("Login", "Auth");
+
+            }
+            
             ViewData["customerID"] = customerID;
             return View(customerID);
         }
@@ -120,6 +191,14 @@ namespace GARITS.Controllers
         [HttpPost]
         public IActionResult OrderNewCustomer(string customerID, string email, DateTime registered, string title, string firstname, string lastname, string addressline1, string addressline2, string county, string postcode, string phone)
         {
+            
+            if (!isAuthenticated())
+            {
+
+                return RedirectToAction("Login", "Auth");
+
+            }
+            
             Customer customer = new Customer
             {
                 customerID = customerID,
@@ -156,6 +235,14 @@ namespace GARITS.Controllers
         [HttpGet]
         public IActionResult OrderParts(string customerID)
         {
+            
+            if (!isAuthenticated())
+            {
+
+                return RedirectToAction("Login", "Auth");
+
+            }
+            
             ViewData["CustomerID"] = customerID;
             ViewData["Parts"] = PartsProvider.getParts();
 
@@ -167,6 +254,14 @@ namespace GARITS.Controllers
         [HttpPost]
         public IActionResult AddPart(string partID, string customerID)
         {
+            
+            if (!isAuthenticated())
+            {
+
+                return RedirectToAction("Login", "Auth");
+
+            }
+            
             Dictionary<Part, int> parts = PartsProvider.getOrder(customerID);
             bool exists = false;
             if (parts != null)
@@ -193,11 +288,43 @@ namespace GARITS.Controllers
         }
         public IActionResult GenerateInvoice(string customerID)
         {
+            
+            if (!isAuthenticated())
+            {
+
+                return RedirectToAction("Login", "Auth");
+
+            }
+            
             Dictionary<Part, int> parts = PartsProvider.getOrder(customerID);
             ViewData["Parts"] = parts;
             ViewData["Order"] = PartsProvider.getOrderDetails(customerID);
             PartsProvider.clearOrder(customerID);
             return View("PartInvoice");
         }
+        
+        private bool isAuthenticated()
+        {
+
+            if (HttpContext.Session.GetString("user") != null)
+            {
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+        
+        public User getAuthenticatedUser()
+        {
+
+            return UserProvider.getUserFromUsername(HttpContext.Session.GetString("user"));
+
+        }
+        
     }
+    
+    
 }

@@ -130,10 +130,10 @@
                     @part.Value
                 </td>
                 <td>
-                    £@(part.Key.price * part.Value)
+                    £@((part.Key.price / 100) * 30) * part.Value)
                 </td>
                 @{
-                    partsTotal = partsTotal + (part.Key.price * part.Value);
+                    partsTotal = partsTotal + (((part.Key.price / 100) * 30) * part.Value);
                 }
 
             </tr>

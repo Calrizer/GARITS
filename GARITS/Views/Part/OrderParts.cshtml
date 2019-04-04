@@ -26,7 +26,7 @@
                 <label>Select parts to order below.</label>
             } else
             {
-                    @foreach (KeyValuePair<Part, int> part in cart)
+                    foreach (KeyValuePair<Part, int> part in cart)
                     {
 
                         <label>@part.Key.partID @part.Key.name x @part.Value</label>

@@ -99,7 +99,7 @@
         foreach (KeyValuePair<Part, int> part in job.parts)
         {
 
-            partsTotal = partsTotal + (part.Key.price * part.Value);
+            partsTotal = partsTotal + (((part.Key.price / 100) * 30) * part.Value);
                  
         }
         

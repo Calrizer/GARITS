@@ -1,6 +1,7 @@
 using System;
 using GARITS.Models;
 using GARITS.Providers;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GARITS.Controllers
@@ -12,6 +13,13 @@ namespace GARITS.Controllers
         public IActionResult ViewCustomers()
         {
 
+            if (!isAuthenticated())
+            {
+
+                return RedirectToAction("Login", "Auth");
+
+            }
+            
             ViewData["Customers"] = CustomerProvider.getAllCustomers();
 
             return View("View");
@@ -21,6 +29,13 @@ namespace GARITS.Controllers
         public IActionResult Search(string search)
         {
 
+            if (!isAuthenticated())
+            {
+
+                return RedirectToAction("Login", "Auth");
+
+            }
+            
             ViewData["Customers"] = CustomerProvider.searchCustomers(search);
             ViewData["Search"] = search;
 
@@ -30,6 +45,13 @@ namespace GARITS.Controllers
 
         public IActionResult AddVehicleSearch(string vrm, string search)
         {
+            
+            if (!isAuthenticated())
+            {
+
+                return RedirectToAction("Login", "Auth");
+
+            }
             
             ViewData["Customers"] = CustomerProvider.searchCustomers(search);
             ViewData["Search"] = search;
@@ -42,6 +64,13 @@ namespace GARITS.Controllers
         public IActionResult ViewCustomersVehicles(string customerID)
         {
 
+            if (!isAuthenticated())
+            {
+
+                return RedirectToAction("Login", "Auth");
+
+            }
+            
             ViewData["Customer"] = CustomerProvider.getCustomerFromID(customerID);
             ViewData["Vehicles"] = CustomerProvider.getCustomerVehicles(customerID);
 
@@ -52,6 +81,13 @@ namespace GARITS.Controllers
         public IActionResult ViewCustomersJobs(string customerID)
         {
 
+            if (!isAuthenticated())
+            {
+
+                return RedirectToAction("Login", "Auth");
+
+            }
+            
             ViewData["Customer"] = CustomerProvider.getCustomerFromID(customerID);
             ViewData["Jobs"] = CustomerProvider.getCustomerJobs(customerID);
 
@@ -62,6 +98,13 @@ namespace GARITS.Controllers
         public IActionResult AddCustomer()
         {
 
+            if (!isAuthenticated())
+            {
+
+                return RedirectToAction("Login", "Auth");
+
+            }
+            
             return View("AddCustomer");
 
         }
@@ -70,6 +113,13 @@ namespace GARITS.Controllers
         public IActionResult AddWithVehicle(string vrm)
         {
 
+            if (!isAuthenticated())
+            {
+
+                return RedirectToAction("Login", "Auth");
+
+            }
+            
             ViewData["Vehicle"] = VehicleProvider.getVehicleFromVRM(vrm);
             
             return View("AddCustomerWithVehicle");
@@ -80,6 +130,13 @@ namespace GARITS.Controllers
         public IActionResult RegisterCustomer(string title, string firstname, string lastname, string email, string tel, string address1, string address2, string county, string postcode)
         {
 
+            if (!isAuthenticated())
+            {
+
+                return RedirectToAction("Login", "Auth");
+
+            }
+            
             Customer customer = new Customer
             {
 
@@ -110,6 +167,13 @@ namespace GARITS.Controllers
         public IActionResult RegisterCustomerWithVehicle(string vrm, string title, string firstname, string lastname, string email, string tel, string address1, string address2, string county, string postcode)
         {
 
+            if (!isAuthenticated())
+            {
+
+                return RedirectToAction("Login", "Auth");
+
+            }
+            
             Customer customer = new Customer
             {
 
@@ -138,6 +202,13 @@ namespace GARITS.Controllers
         public IActionResult RegisterExistingCustomerWithVehicle(string vrm, string customerID)
         {
 
+            if (!isAuthenticated())
+            {
+
+                return RedirectToAction("Login", "Auth");
+
+            }
+            
             CustomerProvider.assignVehicle(vrm, customerID);
             
             return RedirectToAction("BookAddVehicle", "Job", new {vrm = vrm});
@@ -147,6 +218,13 @@ namespace GARITS.Controllers
         public IActionResult EditCustomer(string customerID)
         {
 
+            if (!isAuthenticated())
+            {
+
+                return RedirectToAction("Login", "Auth");
+
+            }
+            
             ViewData["Customer"] = CustomerProvider.getCustomerFromID(customerID);
 
             return View("EditCustomer");
@@ -157,6 +235,13 @@ namespace GARITS.Controllers
         public IActionResult UpdateCustomer(string customerID, string title, string firstname, string lastname, string email, string tel, string address1, string address2, string county, string postcode)
         {
 
+            if (!isAuthenticated())
+            {
+
+                return RedirectToAction("Login", "Auth");
+
+            }
+            
             Customer customer = CustomerProvider.getCustomerFromID(customerID);
 
             customer.title = title;
@@ -175,6 +260,29 @@ namespace GARITS.Controllers
             
         }
         
+        public bool isAuthenticated()
+        {
+            
+            if (HttpContext.Session.GetString("user") != null)
+            {
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+        
+        public User getAuthenticatedUser()
+        {
+
+            return UserProvider.getUserFromUsername(HttpContext.Session.GetString("user"));
+
+        }
+        
+        
         
     }
+    
 }
