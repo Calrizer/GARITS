@@ -284,7 +284,7 @@
 
                         <p class="card-text">@part.Key.manufacturer: @part.Key.name</p>
                         <p class="card-text">@part.Key.partID</p>
-                        <p class="card-text">£@((part.Key.price / 100) * 30)</p>
+                        <p class="card-text">£@(part.Key.price + ((part.Key.price / 100) * 30))</p>
                         <p class="card-text">Quantity: @part.Value</p>
 
                         @{
@@ -301,7 +301,7 @@
                         }
                             
                         @{
-                            partsTotal = partsTotal + (((part.Key.price / 100) * 30) * part.Value);
+                            partsTotal = partsTotal + (part.Key.price + ((part.Key.price / 100) * 30) * part.Value);
                         }
 
                     </div>

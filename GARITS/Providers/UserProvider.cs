@@ -72,7 +72,7 @@ namespace GARITS.Providers
 
             using (MySqlConnection con = new MySqlConnection(connection))
             {
-                string query = "SELECT username, firstname, lastname, role, rate FROM Users WHERE username = @username";
+                string query = "SELECT username, firstname, lastname, role, rate FROM Users WHERE username = @username ORDER BY username";
                 using (MySqlCommand cmd = new MySqlCommand(query))
                 {
                     cmd.Parameters.AddWithValue("@username", username);
@@ -127,7 +127,7 @@ namespace GARITS.Providers
                     {
                         while (sdr.Read()) {
                             passwords.Add(sdr["password"].ToString());
-                            break;
+
                         }
                     }
                     con.Close();
@@ -224,7 +224,7 @@ namespace GARITS.Providers
 
             using (MySqlConnection con = new MySqlConnection(connection))
             {
-                string query = "INSERT INTO users VALUES (@username, @password, @firstname, @lastname, @role, @rate)";
+                string query = "INSERT INTO Users VALUES (@username, @password, @firstname, @lastname, @role, @rate)";
                 using (MySqlCommand cmd = new MySqlCommand(query))
                 {
                     cmd.Parameters.AddWithValue("@username", newUser.username);
@@ -248,7 +248,7 @@ namespace GARITS.Providers
         {
             using (MySqlConnection con = new MySqlConnection(connection))
             {
-                string query = "DELETE FROM users WHERE username = @username";
+                string query = "DELETE FROM Users WHERE username = @username";
                 using (MySqlCommand cmd = new MySqlCommand(query))
                 {
                     cmd.Parameters.AddWithValue("@username", username);
@@ -267,7 +267,7 @@ namespace GARITS.Providers
         {
             using (MySqlConnection con = new MySqlConnection(connection))
             {
-                string query = "UPDATE users SET username = @username, firstname = @firstname, lastname = @lastname, role = @role, rate = @rate WHERE username = @username";
+                string query = "UPDATE Users SET username = @username, firstname = @firstname, lastname = @lastname, role = @role, rate = @rate WHERE username = @username";
                 using (MySqlCommand cmd = new MySqlCommand(query))
                 {
                     cmd.Parameters.AddWithValue("@username", username);

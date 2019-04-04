@@ -78,7 +78,7 @@
             <p>ID: @part.partID  |  @part.quantity in stock.</p>
             <p>@part.manufacturer @part.vehicle  |  @part.years</p>
             <p>£@part.price</p>
-            <p>Markup: <b>£@((part.price / 100) * 30)</b></p>
+            <p>Markup: <b>£@(part.price + ((part.price / 100) * 30))</b></p>
                                   
             <form action="~/Job/AssignPart" class="form-inline" method="post">
                 <div class="form-group" style="margin-top: 10px">
